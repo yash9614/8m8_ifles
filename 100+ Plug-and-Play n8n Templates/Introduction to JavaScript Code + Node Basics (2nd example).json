@@ -1,0 +1,162 @@
+﻿{
+  "name": "Introduction to JavaScript + Code Node Basics (2nd example)",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "f3223043-5aac-4d6b-9fd5-7363002ba823",
+      "name": "When clicking 'Test workflow'",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -336,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+              "name": "firstName",
+              "value": "Damian",
+              "type": "string"
+            },
+            {
+              "id": "b2c3d4e5-f6a7-8901-bcde-f23456789012",
+              "name": "last_name",
+              "value": "Dan",
+              "type": "string"
+            },
+            {
+              "id": "c3d4e5f6-a7b8-9012-cdef-345678901234",
+              "name": "age",
+              "value": 28,
+              "type": "number"
+            },
+            {
+              "id": "d4e5f6a7-b8c9-0123-defa-456789012345",
+              "name": "isActive",
+              "value": true,
+              "type": "boolean"
+            },
+            {
+              "id": "e5f6a7b8-c9d0-1234-efab-567890123456",
+              "name": "city",
+              "value": "Bangkok",
+              "type": "string"
+            },
+            {
+              "id": "f6a7b8c9-d0e1-2345-fabc-678901234567",
+              "name": "skills",
+              "value": [
+                "JavaScript",
+                "Python",
+                "N8N"
+              ],
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "01ee3b41-ae5c-44ba-bce1-a4843b892cf2",
+      "name": "Sample Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -16,
+        96
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+              "name": "name",
+              "value": "John",
+              "type": "string"
+            },
+            {
+              "id": "b2c3d4e5-f6a7-8901-bcde-f23456789012",
+              "name": "email",
+              "value": "john@example.com",
+              "type": "string"
+            },
+            {
+              "id": "c3d4e5f6-a7b8-9012-cdef-345678901234",
+              "name": "age",
+              "value": 25,
+              "type": "number"
+            },
+            {
+              "id": "e6be8943-6148-4c64-9d89-b495b7fa6487",
+              "name": "",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "9dfa141e-c3f6-4ff6-8d68-b71576883556",
+      "name": "Create Single Item",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -16,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = [\n  {\n    name: 'John',\n    email: 'john@example.com',\n    age: 25,\n    status: 'active'\n  },\n  {\n    name: 'Sarah',\n    email: 'sarah@example.com', \n    age: 30,\n    status: 'inactive'\n  },\n  {\n    name: 'Mike',\n    email: 'mike@example.com',\n    age: 28,\n    status: 'active'\n  }\n];\n\nreturn items.map(item => ({ json: item }));"
+      },
+      "id": "9c380c10-5f7f-4a1e-a99c-5a1a8ee5237b",
+      "name": "Create Multiple Items",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        304
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking 'Test workflow'": {
+      "main": [
+        [
+          {
+            "node": "Create Single Item",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Single Item": {
+      "main": [
+        [
+          {
+            "node": "Create Multiple Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "15294aa0-26f2-4dd9-8ba8-126fcffebff8",
+  "meta": {
+    "instanceId": "ae59e6b831344dba624c99cbe778a4bc47150f8e64de86a8011d15bac8e58c21"
+  },
+  "id": "O0voEPQyB76XZ1PP",
+  "tags": []
+}

@@ -1,0 +1,87 @@
+﻿{
+  "name": "Weather Message Generator Example",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "91f10b54-daf0-4b02-b43d-a1debad305fc",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        32,
+        -112
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "12345",
+              "name": "locations",
+              "type": "array",
+              "value": "[{\"city\":\"London\",\"temperature\":8,\"condition\":\"rainy\",\"humidity\":85},{\"city\":\"Miami\",\"temperature\":28,\"condition\":\"sunny\",\"humidity\":70},{\"city\":\"Chicago\",\"temperature\":5,\"condition\":\"snowy\",\"humidity\":60},{\"city\":\"Los Angeles\",\"temperature\":22,\"condition\":\"cloudy\",\"humidity\":65}]"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "403201a1-c6d1-4136-a37d-a516dd3c873c",
+      "name": "Weather Data",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        240,
+        -112
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get weather data for all locations\nconst items = $input.all();\nconst locations = items[0].json.locations;\n\n// Generate custom messages for each location\nconst weatherReports = locations.map(location => {\n  let message = '';\n  let recommendation = '';\n  \n  // Temperature-based logic\n  if (location.temperature < 10) {\n    message = `It's chilly in ${location.city} at ${location.temperature}Â°C`;\n    recommendation = 'Dress warm and bring a jacket!';\n  } else if (location.temperature > 25) {\n    message = `It's hot in ${location.city} at ${location.temperature}Â°C`;\n    recommendation = 'Perfect t-shirt weather!';\n  } else {\n    message = `Nice weather in ${location.city} at ${location.temperature}Â°C`;\n    recommendation = 'Comfortable temperature today!';\n  }\n  \n  // Condition-based additions\n  if (location.condition.includes('rain')) {\n    recommendation += ' Don\\'t forget your umbrella!';\n  } else if (location.condition.includes('snow')) {\n    recommendation += ' Watch out for slippery roads!';\n  } else if (location.condition === 'sunny') {\n    recommendation += ' Great day to be outside!';\n  }\n  \n  // Humidity warnings\n  if (location.humidity > 80) {\n    recommendation += ' High humidity - stay hydrated!';\n  }\n  \n  return {\n    city: location.city,\n    originalData: location,\n    weatherMessage: message,\n    recommendation: recommendation,\n    alertLevel: location.temperature < 0 ? 'extreme' : \n                location.temperature < 10 ? 'high' : \n                location.temperature > 30 ? 'high' : 'normal'\n  };\n});\n\nreturn {\n  totalLocations: locations.length,\n  weatherReports: weatherReports,\n  generatedAt: new Date().toISOString()\n};"
+      },
+      "id": "183dc066-0c4c-494b-939f-0b1a5bf279bf",
+      "name": "Weather Message Generator",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        432,
+        -112
+      ],
+      "typeVersion": 2
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Weather Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Weather Data": {
+      "main": [
+        [
+          {
+            "node": "Weather Message Generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "fd4dc340-ab92-4e37-8c09-b80cb723403d",
+  "meta": {
+    "instanceId": "ae59e6b831344dba624c99cbe778a4bc47150f8e64de86a8011d15bac8e58c21"
+  },
+  "id": "8Z98PETZ7rQp5wBV",
+  "tags": []
+}

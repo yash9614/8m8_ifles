@@ -1,0 +1,163 @@
+﻿{
+  "name": "Feedback Collection Form",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Feedback Form",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Whats your first name?"
+            },
+            {
+              "fieldLabel": "What's your email?"
+            },
+            {
+              "fieldLabel": "Please give us your feedback",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Great"
+                  },
+                  {
+                    "option": "Good"
+                  },
+                  {
+                    "option": "Neutral"
+                  },
+                  {
+                    "option": "Bad"
+                  }
+                ]
+              }
+            },
+            {
+              "fieldLabel": "Please leave a comment"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "b3563f98-e716-4f99-9674-d4c9b18f15e3",
+      "name": "On form submission",
+      "webhookId": "0d681eee-db33-4630-b25e-b7ccb7d39b5d"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1-YnIyR-_3LmUA15ZFxYQk26nXTqWe65rp_B2ep19iTU",
+          "mode": "list",
+          "cachedResultName": "Feedback Collection",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-YnIyR-_3LmUA15ZFxYQk26nXTqWe65rp_B2ep19iTU/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-YnIyR-_3LmUA15ZFxYQk26nXTqWe65rp_B2ep19iTU/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $json['Whats your first name?'] }}",
+            "Email": "={{ $json['What\\'s your email?'] }}",
+            "Feedback": "={{ $json['Please give us your feedback'] }}",
+            "Comment": "={{ $json['Please leave a comment'] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Feedback",
+              "displayName": "Feedback",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Comment",
+              "displayName": "Comment",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        280,
+        0
+      ],
+      "id": "20b7a09d-58bb-41df-b536-2ff2d17eb6a3",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "TQHNRwbFTxYXwnxr",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "14abe07d-5088-4767-8912-0d76ee3c7a4d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ae59e6b831344dba624c99cbe778a4bc47150f8e64de86a8011d15bac8e58c21"
+  },
+  "id": "49MW8iaFbbMSDjgf",
+  "tags": []
+}

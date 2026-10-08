@@ -1,0 +1,344 @@
+﻿{
+  "name": "Apollo Simple  Lead Scraper",
+  "nodes": [
+    {
+      "parameters": {
+        "amount": 15
+      },
+      "id": "9b8dd887-376e-4c6b-8f83-c9dac987bb48",
+      "name": "Wait",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1260,
+        360
+      ],
+      "webhookId": "80f46cdf-ef90-45da-9c65-a3737782e5aa"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        380,
+        140
+      ],
+      "id": "c0d9bdbc-ae9b-4ceb-bf81-6b0b10361b4b",
+      "name": "Merge",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -60,
+        120
+      ],
+      "id": "2666084f-71d1-42c8-8beb-86c45b40e76a",
+      "name": "When clicking â€˜Test workflowâ€™"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appLOUdMhBkjYyVVN",
+          "mode": "list",
+          "cachedResultName": "Apollo Scraper",
+          "cachedResultUrl": "https://airtable.com/appLOUdMhBkjYyVVN"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblrzXds8DlEwgYmO",
+          "mode": "list",
+          "cachedResultName": "Lead",
+          "cachedResultUrl": "https://airtable.com/appLOUdMhBkjYyVVN/tblrzXds8DlEwgYmO"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Notes",
+              "displayName": "Notes",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Assignee",
+              "displayName": "Assignee",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Todo",
+                  "value": "Todo"
+                },
+                {
+                  "name": "In progress",
+                  "value": "In progress"
+                },
+                {
+                  "name": "Done",
+                  "value": "Done"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        1300,
+        100
+      ],
+      "id": "84f43a74-1db9-4a37-9d1c-e0e2f557a391",
+      "name": "Add Lead",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "sqO5ueXPaoMEQImm",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.apify.com/v2/acts/PEgClm7RgRD7YO94b/runs",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer [INPUT YOUR API HERE]"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "=[Enter the JSON received from the Apify scraper here]",
+        "options": {}
+      },
+      "id": "7cf1cc75-03e4-447e-b72d-89bb2295a0b5",
+      "name": "Paid Lead Scraper (Apollo)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        160,
+        120
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "8a723b17-b46e-4c1c-b051-e410bd3a101e",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "not ready",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1040,
+        260
+      ],
+      "id": "6ec9508c-c61c-4fee-bca6-153189eedc48",
+      "name": "Check status"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.apify.com/v2/datasets/{{ $('Paid Lead Scraper (Apollo)').item.json.data.defaultDatasetId }}/items?format=json",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer [ENTER YOUR API HERE]"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b6c8916b-9e14-4a24-bf8c-c17b6ff6306c",
+      "name": "Get Dataset",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        600,
+        280
+      ],
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [\n  {\n    json: Object.keys($json).length > 0 ? $json : { status: \"not ready\" }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        820,
+        120
+      ],
+      "id": "6a33a69f-47d1-44d2-ae30-f8f79a72ef6c",
+      "name": "Verify Lead Data"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Get Dataset",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking â€˜Test workflowâ€™": {
+      "main": [
+        [
+          {
+            "node": "Paid Lead Scraper (Apollo)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Paid Lead Scraper (Apollo)": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check status": {
+      "main": [
+        [
+          {
+            "node": "Add Lead",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Dataset": {
+      "main": [
+        [
+          {
+            "node": "Verify Lead Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verify Lead Data": {
+      "main": [
+        [
+          {
+            "node": "Check status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "d1eebde1-97b9-4bcf-8def-80e23790fd85",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ae59e6b831344dba624c99cbe778a4bc47150f8e64de86a8011d15bac8e58c21"
+  },
+  "id": "BZDL7LyLypeZoFfM",
+  "tags": []
+}

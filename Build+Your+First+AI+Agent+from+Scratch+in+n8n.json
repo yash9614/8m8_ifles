@@ -1,0 +1,198 @@
+﻿{
+  "name": "Build Your First AI Agent from Scratch in n8n",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        608,
+        -208
+      ],
+      "id": "03d99487-3b52-45ff-bebb-70da14b4519b",
+      "name": "When chat message received",
+      "webhookId": "01316140-f5e4-4e01-9dae-eedb7b8cd574"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "=#Role\n\nYou are a personal assistant AI Agent. Your primary role is to send emails. You have access to two tools: Contacts and Gmail_Tool.\n\n##Tools\n\n1.Contacts\n\nUse this tool when you need to look up contact information like an email address or phone number. You need to use this tool BEFORE sending an email or BEFORE getting emails.\n\n\n2. Gmail_Tool:\n\nUse this for handling all email-related actions, like sending emails, reading emails, or forwarding emails.\n\n\n- Keep emails professional.\n\n- Format nicely the Body of the email with line breaks and clear structure.\n\n\n- Always sing off as \nBest regards,\nDamian\n\n\n\nHere is the current time/date: {{ $now.format('DD')}}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [
+        832,
+        -208
+      ],
+      "id": "932a985a-0bfa-4f45-aa55-9a2a9caa3042",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        656,
+        -16
+      ],
+      "id": "8f3a307b-36c8-4b33-9fcb-4ec74676c9f8",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "tMmQkl43xd3lMNlH",
+          "name": "Pierwsza Automatyzacja AI"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        848,
+        32
+      ],
+      "id": "3bd900ad-0280-4215-96d0-c7008d856dbb",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('To', ``, 'string') }}",
+        "subject": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Subject', ``, 'string') }}",
+        "emailType": "text",
+        "message": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Message', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        1008,
+        -16
+      ],
+      "id": "19f7725c-3fc3-4726-a563-8ceea757185a",
+      "name": "Gmail_Tools",
+      "webhookId": "80f248f3-7515-4736-89ed-469a38a71f6e",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "wBCMmifaUJAlBO5c",
+          "name": "n8ndemosofficial"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "10tu3dCMDnBRdObH4w8x5zCZn9NwGeKCviXfEfTogD-Y",
+          "mode": "list",
+          "cachedResultName": "Contacts",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10tu3dCMDnBRdObH4w8x5zCZn9NwGeKCviXfEfTogD-Y/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10tu3dCMDnBRdObH4w8x5zCZn9NwGeKCviXfEfTogD-Y/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.5,
+      "position": [
+        1248,
+        -48
+      ],
+      "id": "53d6088d-8cc3-41a5-ae0a-e9b4862e15e5",
+      "name": "Contacts",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ZKzM07HeJf2KLno2",
+          "name": "Google Sheets account 9"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail_Tools": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Contacts": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "4c8fb4d9-b74c-4564-832b-f008de5cd857",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ae59e6b831344dba624c99cbe778a4bc47150f8e64de86a8011d15bac8e58c21"
+  },
+  "id": "QKR5OjLfleOMoqhM",
+  "tags": []
+}

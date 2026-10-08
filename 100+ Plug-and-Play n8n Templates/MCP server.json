@@ -1,0 +1,502 @@
+﻿{
+  "name": "MCP server",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "demo"
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "4747c71a-3cee-4826-9a8d-6d213726dafe",
+      "name": "MCP Server Trigger",
+      "webhookId": "ed228aea-1dc5-460e-ae11-e7e999588895"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appdJL5vVBoJpsXh1",
+          "mode": "list",
+          "cachedResultName": "To do list",
+          "cachedResultUrl": "https://airtable.com/appdJL5vVBoJpsXh1"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbllNQKsjhScL18fD",
+          "mode": "list",
+          "cachedResultName": "To Dos",
+          "cachedResultUrl": "https://airtable.com/appdJL5vVBoJpsXh1/tbllNQKsjhScL18fD"
+        },
+        "options": {
+          "fields": [
+            "Name",
+            "Completed"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.airtableTool",
+      "typeVersion": 2.1,
+      "position": [
+        -480,
+        280
+      ],
+      "id": "787b5a47-b62d-45e3-9f2f-256f5d91f889",
+      "name": "Show Todos",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "sqO5ueXPaoMEQImm",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appdJL5vVBoJpsXh1",
+          "mode": "list",
+          "cachedResultName": "To do list",
+          "cachedResultUrl": "https://airtable.com/appdJL5vVBoJpsXh1"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbllNQKsjhScL18fD",
+          "mode": "list",
+          "cachedResultName": "To Dos",
+          "cachedResultUrl": "https://airtable.com/appdJL5vVBoJpsXh1/tbllNQKsjhScL18fD"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Completed": false,
+            "Name": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Name', ``, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Completed",
+              "displayName": "Completed",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtableTool",
+      "typeVersion": 2.1,
+      "position": [
+        -320,
+        280
+      ],
+      "id": "00655174-4b09-4878-bab6-917c159cbd49",
+      "name": "Add task",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "sqO5ueXPaoMEQImm",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appdJL5vVBoJpsXh1",
+          "mode": "list",
+          "cachedResultName": "To do list",
+          "cachedResultUrl": "https://airtable.com/appdJL5vVBoJpsXh1"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbllNQKsjhScL18fD",
+          "mode": "list",
+          "cachedResultName": "To Dos",
+          "cachedResultUrl": "https://airtable.com/appdJL5vVBoJpsXh1/tbllNQKsjhScL18fD"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Completed": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Completed', ``, 'boolean') }}",
+            "id": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('id__using_to_match_', `Airtable record ID, typically formatted like â€œrecSseD96TP0nnznWâ€`, 'string') }}",
+            "Name": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Name', ``, 'string') }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Completed",
+              "displayName": "Completed",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtableTool",
+      "typeVersion": 2.1,
+      "position": [
+        -180,
+        280
+      ],
+      "id": "9c56196f-7625-44b4-8f74-eacdd83327cb",
+      "name": "Update Todo",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "sqO5ueXPaoMEQImm",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "description": "Use this tool for creating social media posts.",
+        "workflowId": {
+          "__rl": true,
+          "value": "znGSOazUciPZa6vk",
+          "mode": "list",
+          "cachedResultName": "Posts Generator"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "query": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('query', ``, 'string') }}"
+          },
+          "matchingColumns": [
+            "query"
+          ],
+          "schema": [
+            {
+              "id": "query",
+              "displayName": "query",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        620,
+        220
+      ],
+      "id": "23ed67dd-3163-42e3-85dc-d8904848aa14",
+      "name": "Generate Posts"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('To', ``, 'string') }}",
+        "subject": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Subject', ``, 'string') }}",
+        "message": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Message', ``, 'string') }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        220,
+        420
+      ],
+      "id": "2d2e1d43-86ac-4d1f-8043-ad31a126a733",
+      "name": "Send Emails",
+      "webhookId": "2daa8c21-afc8-4c11-8efa-01247d47ae0c",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "s2H64pcNMMbm4kdK",
+          "name": "Gmail account 8"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "limit": 10,
+        "filters": {}
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        100,
+        420
+      ],
+      "id": "dddd6ccc-427c-4b06-b4ae-c01d3cf7b4d0",
+      "name": "Get Emails",
+      "webhookId": "5897cfc7-19db-4072-ae21-d4060771e6b5",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "s2H64pcNMMbm4kdK",
+          "name": "Gmail account 8"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "draft",
+        "subject": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Subject', ``, 'string') }}",
+        "message": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Message', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        -20,
+        420
+      ],
+      "id": "5eb70fe0-6cca-4429-bc1d-dbf56dae5e04",
+      "name": "Create draft",
+      "webhookId": "5dff090a-5803-4d31-b6a4-ccf7b477c1e1",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "s2H64pcNMMbm4kdK",
+          "name": "Gmail account 8"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1rP7rhJqPzOYO11UxARnceK46ViDhK56ikejVIDCke8o",
+          "mode": "list",
+          "cachedResultName": "Contact database",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1rP7rhJqPzOYO11UxARnceK46ViDhK56ikejVIDCke8o/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1rP7rhJqPzOYO11UxARnceK46ViDhK56ikejVIDCke8o/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.6,
+      "position": [
+        360,
+        420
+      ],
+      "id": "74851912-b9f6-458c-8f9a-618314ab2b65",
+      "name": "Contacts Database",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "TQHNRwbFTxYXwnxr",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Email\n",
+        "height": 320,
+        "width": 560,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -60,
+        320
+      ],
+      "id": "e63bc296-7118-4451-a3cc-7e0cbf64355f",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## ToDos\n",
+        "height": 320,
+        "width": 440,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -520,
+        200
+      ],
+      "id": "009a48f0-b8b3-48fa-b5ce-cf6b8f4a03a9",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Social Media",
+        "height": 320,
+        "width": 440,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        520,
+        100
+      ],
+      "id": "852341fa-b2b2-48f1-8ab8-dd92657c42c6",
+      "name": "Sticky Note2"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Show Todos": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add task": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Todo": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Posts": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Emails": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Emails": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create draft": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Contacts Database": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "737d5077-15ed-4a77-9915-5b8bae680d0c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ae59e6b831344dba624c99cbe778a4bc47150f8e64de86a8011d15bac8e58c21"
+  },
+  "id": "gKLuFlblUi5URuAP",
+  "tags": []
+}

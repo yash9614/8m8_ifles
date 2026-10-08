@@ -1,0 +1,87 @@
+﻿{
+  "name": "Data Format Converter Example",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "3c2c6b26-2e67-4311-ac90-c402d811187b",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        176,
+        -144
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "12345",
+              "name": "apiResponse",
+              "type": "object",
+              "value": "{\"users\":[{\"id\":1,\"profile\":{\"firstName\":\"John\",\"lastName\":\"Doe\",\"contact\":{\"email\":\"john@example.com\",\"phone\":\"+1-555-0123\"}},\"preferences\":{\"notifications\":true,\"theme\":\"dark\"}},{\"id\":2,\"profile\":{\"firstName\":\"Jane\",\"lastName\":\"Smith\",\"contact\":{\"email\":\"jane@example.com\",\"phone\":\"+1-555-0456\"}},\"preferences\":{\"notifications\":false,\"theme\":\"light\"}}],\"metadata\":{\"total\":2,\"page\":1,\"timestamp\":\"2024-08-15T10:30:00Z\"}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "0a3d968f-6398-4555-8ae8-ab416fa7f7d0",
+      "name": "Complex API Response",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        384,
+        -144
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the complex API response\nconst items = $input.all();\nconst apiData = items[0].json.apiResponse;\n\n// Extract and flatten user data\nconst flattenedUsers = apiData.users.map(user => ({\n  // Basic info\n  userId: user.id,\n  fullName: `${user.profile.firstName} ${user.profile.lastName}`,\n  firstName: user.profile.firstName,\n  lastName: user.profile.lastName,\n  \n  // Contact info\n  email: user.profile.contact.email,\n  phone: user.profile.contact.phone,\n  \n  // Preferences\n  notificationsEnabled: user.preferences.notifications,\n  theme: user.preferences.theme\n}));\n\n// Create different output formats\n\n// 1. CSV-ready format (array of arrays)\nconst csvData = [\n  ['User ID', 'Full Name', 'Email', 'Phone', 'Notifications', 'Theme'], // Header\n  ...flattenedUsers.map(user => [\n    user.userId,\n    user.fullName,\n    user.email,\n    user.phone,\n    user.notificationsEnabled ? 'Yes' : 'No',\n    user.theme\n  ])\n];\n\n// 2. Email list format\nconst emailList = flattenedUsers.map(user => user.email);\n\n// 3. Contact cards format\nconst contactCards = flattenedUsers.map(user => ({\n  name: user.fullName,\n  contactInfo: `${user.email} | ${user.phone}`,\n  settings: `Notifications: ${user.notificationsEnabled ? 'On' : 'Off'}, Theme: ${user.theme}`\n}));\n\n// 4. Summary statistics\nconst stats = {\n  totalUsers: flattenedUsers.length,\n  notificationUsers: flattenedUsers.filter(u => u.notificationsEnabled).length,\n  themeBreakdown: {\n    dark: flattenedUsers.filter(u => u.theme === 'dark').length,\n    light: flattenedUsers.filter(u => u.theme === 'light').length\n  },\n  domains: [...new Set(flattenedUsers.map(u => u.email.split('@')[1]))]\n};\n\n// 5. Grouped by preferences\nconst groupedByTheme = flattenedUsers.reduce((groups, user) => {\n  const theme = user.theme;\n  if (!groups[theme]) {\n    groups[theme] = [];\n  }\n  groups[theme].push(user);\n  return groups;\n}, {});\n\nreturn {\n  originalData: apiData,\n  transformedData: {\n    flattenedUsers: flattenedUsers,\n    csvFormat: csvData,\n    emailList: emailList,\n    contactCards: contactCards,\n    groupedByTheme: groupedByTheme\n  },\n  statistics: stats,\n  metadata: {\n    processedAt: new Date().toISOString(),\n    originalTotal: apiData.metadata.total,\n    transformedTotal: flattenedUsers.length\n  }\n};"
+      },
+      "id": "52629abd-5969-4742-8e99-c428c640a1fa",
+      "name": "Data Format Converter",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        576,
+        -144
+      ],
+      "typeVersion": 2
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Complex API Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Complex API Response": {
+      "main": [
+        [
+          {
+            "node": "Data Format Converter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "9a03664a-7711-4d39-a58a-fe2b53d0fbb0",
+  "meta": {
+    "instanceId": "ae59e6b831344dba624c99cbe778a4bc47150f8e64de86a8011d15bac8e58c21"
+  },
+  "id": "KqfubyhJIjSGufoX",
+  "tags": []
+}

@@ -1,0 +1,191 @@
+﻿{
+  "name": "Build Your First n8n Workflow Step by Step",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Formularz kontaktowy",
+        "formDescription": "Skontaktuj sie z nami, jesli masz jakies pytanie.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Imie",
+              "placeholder": "Prosze podaj swoje imie.",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Nazwisko",
+              "placeholder": "Prosze podaj swoje nazwisko.",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Email",
+              "fieldType": "email",
+              "placeholder": "Prosze podaj swoj email.",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Pytanie",
+              "placeholder": "W czym mozemy pomoc?",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.3,
+      "position": [
+        0,
+        0
+      ],
+      "id": "e13c1b6f-ac6f-4808-a518-7c6b39b1edb6",
+      "name": "On Form Submission",
+      "webhookId": "94a3e567-b134-470c-b704-5e96cbc095a0"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1Lr3xCBLAiFBcXA38wgr7Mbzt4m0YpbJ9gCW-dkpRTC4",
+          "mode": "list",
+          "cachedResultName": "Pierwsza Automatyzacja Formularz kontaktowy",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Lr3xCBLAiFBcXA38wgr7Mbzt4m0YpbJ9gCW-dkpRTC4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Formularz kontaktowy",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Lr3xCBLAiFBcXA38wgr7Mbzt4m0YpbJ9gCW-dkpRTC4/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Nazwisko": "={{ $json.Nazwisko }}",
+            "Email": "={{ $json.Email }}",
+            "Pytanie": "={{ $json.Pytanie }}",
+            "Imie": "={{ $json.Imie }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Imie",
+              "displayName": "Imie",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Nazwisko",
+              "displayName": "Nazwisko",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Pytanie",
+              "displayName": "Pytanie",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        208,
+        0
+      ],
+      "id": "ea9b6d11-96fa-42e3-8aed-87695797afa5",
+      "name": "Customer Databse",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "nWbkysqaj0ZJyotp",
+          "name": "Google Sheets account 7"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Email }}",
+        "subject": "Dziekujemu za Twoja wiadomosc.",
+        "message": "=Dziekujemy za zgloszenie. Potwierdzamy, ze otrzymalismy TwojÃ¥ wiadomosc i wkrotce sie z TobÃ¥ skontaktujemy. \nPozdrawiamy,\nZespol wsparcia",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        416,
+        0
+      ],
+      "id": "9eb8a32a-f005-4e60-b294-351849f4bf2d",
+      "name": "sendEmail",
+      "webhookId": "691e1b35-5baa-4366-b4b3-81a97742fff7",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "GJ6FZOeRrR8KOJlL",
+          "name": "Gmail account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On Form Submission": {
+      "main": [
+        [
+          {
+            "node": "Customer Databse",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Customer Databse": {
+      "main": [
+        [
+          {
+            "node": "sendEmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "e89afd4a-34db-41c7-b66c-faba38675ba3",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ae59e6b831344dba624c99cbe778a4bc47150f8e64de86a8011d15bac8e58c21"
+  },
+  "id": "4qycpzfLW3oNnBlb",
+  "tags": []
+}

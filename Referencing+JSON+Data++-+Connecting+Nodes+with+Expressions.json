@@ -1,0 +1,203 @@
+﻿{
+  "name": "Referencing JSON Data  - Connecting Nodes with Expressions",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "81c9eab4-e9a1-43f1-ae24-74be4b9c8d52",
+      "name": "When clicking \"Test Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        112,
+        -48
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1",
+              "name": "firstName",
+              "value": "Sarah",
+              "type": "string"
+            },
+            {
+              "id": "2",
+              "name": "lastName",
+              "value": "Johnson",
+              "type": "string"
+            },
+            {
+              "id": "4",
+              "name": "department",
+              "value": "Marketing",
+              "type": "string"
+            },
+            {
+              "id": "5",
+              "name": "employeeId",
+              "value": "EMP001",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "75abd7d4-4b71-4182-8794-2fac51f07e8e",
+      "name": "Employee Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        320,
+        -48
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1",
+              "name": "company",
+              "value": "TechCorp",
+              "type": "string"
+            },
+            {
+              "id": "2",
+              "name": "location",
+              "value": "San Francisco",
+              "type": "string"
+            },
+            {
+              "id": "3",
+              "name": "industry",
+              "value": "Software Development",
+              "type": "string"
+            },
+            {
+              "id": "4",
+              "name": "founded",
+              "value": "2020",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "3a7a0283-7037-47c1-b2fd-4a1ffd1aa65c",
+      "name": "Company Info",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        544,
+        -48
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1",
+              "name": "previousNodeExample",
+              "value": "={{ $('Employee Data').item.json.firstName }}\n\n",
+              "type": "string"
+            },
+            {
+              "id": "2",
+              "name": "earlierNodeExample",
+              "value": "={{ $('Employee Data') }}",
+              "type": "string"
+            },
+            {
+              "id": "3",
+              "name": "combinedMessage",
+              "value": "={{ $('Employee Data').item.json.firstName }}",
+              "type": "string"
+            },
+            {
+              "id": "4",
+              "name": "employeeEmail",
+              "value": "={{ $('Employee Data').item.json.email }}",
+              "type": "string"
+            },
+            {
+              "id": "5",
+              "name": "companyLocation",
+              "value": "={{ $json.location }}",
+              "type": "string"
+            },
+            {
+              "id": "d231d69c-c2cc-4e58-a10f-eb398368b5fd",
+              "name": "fullMessage",
+              "value": "={{ $('Employee Data').item.json.firstName }} works at {{ $json.company }} works in {{ $('Employee Data').item.json.department }}",
+              "type": "string"
+            },
+            {
+              "id": "2a5106ea-e084-4e6c-8458-79d6bf806a82",
+              "name": "welcomeMessage",
+              "value": "=Welcome {{ $('Employee Data').item.json.firstName }} from {{ $('Employee Data').item.json.department }} based in {{ $json.location }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "8cfbfe19-3d50-4d28-8c6a-1449fa68a8a1",
+      "name": "Reference Examples",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        784,
+        -48
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking \"Test Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Employee Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Employee Data": {
+      "main": [
+        [
+          {
+            "node": "Company Info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Company Info": {
+      "main": [
+        [
+          {
+            "node": "Reference Examples",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "55dab3ea-466c-438a-9146-247a480570f3",
+  "meta": {
+    "instanceId": "ae59e6b831344dba624c99cbe778a4bc47150f8e64de86a8011d15bac8e58c21"
+  },
+  "id": "MK02zmxFIlxdk7yW",
+  "tags": []
+}

@@ -1,0 +1,523 @@
+﻿{
+  "name": "JSON in n8n -  How Data Really Flows Between Nodes - Employee Example",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "9d0f7e00-b6da-473e-8123-25d34bdfb05b",
+      "name": "When clicking \"Test Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -16,
+        -96
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1",
+              "name": "firstName",
+              "value": "John",
+              "type": "string"
+            },
+            {
+              "id": "2",
+              "name": "lastName",
+              "value": "Smith",
+              "type": "string"
+            },
+            {
+              "id": "3",
+              "name": "age",
+              "value": 32,
+              "type": "number"
+            },
+            {
+              "id": "4",
+              "name": "email",
+              "value": "john@example.com",
+              "type": "string"
+            },
+            {
+              "id": "5",
+              "name": "isActive",
+              "value": "true",
+              "type": "boolean"
+            },
+            {
+              "id": "6",
+              "name": "department",
+              "value": "Engineering",
+              "type": "string"
+            },
+            {
+              "id": "7",
+              "name": "city",
+              "value": "New York",
+              "type": "string"
+            },
+            {
+              "id": "8",
+              "name": "salary",
+              "value": 75000,
+              "type": "number"
+            },
+            {
+              "id": "9",
+              "name": "skills",
+              "value": [
+                "JavaScript",
+                "Python",
+                "React"
+              ],
+              "type": "array"
+            },
+            {
+              "id": "10",
+              "name": "joinDate",
+              "value": "2023-01-15",
+              "type": "string"
+            },
+            {
+              "id": "11",
+              "name": "employeeId",
+              "value": "EMP001",
+              "type": "string"
+            },
+            {
+              "id": "12",
+              "name": "experience",
+              "value": 5,
+              "type": "number"
+            },
+            {
+              "id": "13",
+              "name": "isManager",
+              "value": "false",
+              "type": "boolean"
+            },
+            {
+              "id": "14",
+              "name": "phone",
+              "value": "+1-555-0123",
+              "type": "string"
+            },
+            {
+              "id": "15",
+              "name": "projectCount",
+              "value": 3,
+              "type": "number"
+            },
+            {
+              "id": "16",
+              "name": "rating",
+              "value": 4.5,
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a05f9f18-fc87-42f8-b779-9084a81e80fc",
+      "name": "Employee 1",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        208,
+        -240
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1",
+              "name": "firstName",
+              "value": "Sarah",
+              "type": "string"
+            },
+            {
+              "id": "2",
+              "name": "lastName",
+              "value": "Johnson",
+              "type": "string"
+            },
+            {
+              "id": "3",
+              "name": "age",
+              "value": "28",
+              "type": "number"
+            },
+            {
+              "id": "4",
+              "name": "email",
+              "value": "sarah@example.com",
+              "type": "string"
+            },
+            {
+              "id": "5",
+              "name": "isActive",
+              "value": "true",
+              "type": "boolean"
+            },
+            {
+              "id": "6",
+              "name": "department",
+              "value": "Marketing",
+              "type": "string"
+            },
+            {
+              "id": "7",
+              "name": "city",
+              "value": "Los Angeles",
+              "type": "string"
+            },
+            {
+              "id": "8",
+              "name": "salary",
+              "value": "68000",
+              "type": "number"
+            },
+            {
+              "id": "9",
+              "name": "skills",
+              "value": [
+                "SEO",
+                "Content Marketing",
+                "Analytics"
+              ],
+              "type": "array"
+            },
+            {
+              "id": "10",
+              "name": "joinDate",
+              "value": "2022-09-12",
+              "type": "string"
+            },
+            {
+              "id": "11",
+              "name": "employeeId",
+              "value": "EMP002",
+              "type": "string"
+            },
+            {
+              "id": "12",
+              "name": "experience",
+              "value": "3",
+              "type": "number"
+            },
+            {
+              "id": "13",
+              "name": "isManager",
+              "value": "true",
+              "type": "boolean"
+            },
+            {
+              "id": "14",
+              "name": "phone",
+              "value": "+1-555-0456",
+              "type": "string"
+            },
+            {
+              "id": "15",
+              "name": "projectCount",
+              "value": "7",
+              "type": "number"
+            },
+            {
+              "id": "16",
+              "name": "rating",
+              "value": "4.8",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "0a480599-7d96-4fe2-832a-831d52e38462",
+      "name": "Employee 2",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        208,
+        -96
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1",
+              "name": "firstName",
+              "value": "Michael",
+              "type": "string"
+            },
+            {
+              "id": "2",
+              "name": "lastName",
+              "value": "Davis",
+              "type": "string"
+            },
+            {
+              "id": "3",
+              "name": "age",
+              "value": 35,
+              "type": "number"
+            },
+            {
+              "id": "4",
+              "name": "email",
+              "value": "michael@example.com",
+              "type": "string"
+            },
+            {
+              "id": "5",
+              "name": "isActive",
+              "value": "true",
+              "type": "boolean"
+            },
+            {
+              "id": "6",
+              "name": "department",
+              "value": "Sales",
+              "type": "string"
+            },
+            {
+              "id": "7",
+              "name": "city",
+              "value": "Chicago",
+              "type": "string"
+            },
+            {
+              "id": "8",
+              "name": "salary",
+              "value": 82000,
+              "type": "number"
+            },
+            {
+              "id": "9",
+              "name": "skills",
+              "value": [
+                "CRM",
+                "Negotiation",
+                "Lead Generation"
+              ],
+              "type": "array"
+            },
+            {
+              "id": "10",
+              "name": "joinDate",
+              "value": "2021-03-08",
+              "type": "string"
+            },
+            {
+              "id": "11",
+              "name": "employeeId",
+              "value": "EMP003",
+              "type": "string"
+            },
+            {
+              "id": "12",
+              "name": "experience",
+              "value": 8,
+              "type": "number"
+            },
+            {
+              "id": "13",
+              "name": "isManager",
+              "value": "true",
+              "type": "boolean"
+            },
+            {
+              "id": "14",
+              "name": "phone",
+              "value": "+1-555-0789",
+              "type": "string"
+            },
+            {
+              "id": "15",
+              "name": "projectCount",
+              "value": 12,
+              "type": "number"
+            },
+            {
+              "id": "16",
+              "name": "rating",
+              "value": 4.7,
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "0f587ec4-43ad-423e-b161-641f28e6f515",
+      "name": "Employee 3",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        208,
+        48
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1",
+              "name": "firstName",
+              "value": "Emma",
+              "type": "string"
+            },
+            {
+              "id": "2",
+              "name": "lastName",
+              "value": "Wilson",
+              "type": "string"
+            },
+            {
+              "id": "3",
+              "name": "age",
+              "value": 26,
+              "type": "number"
+            },
+            {
+              "id": "4",
+              "name": "email",
+              "value": "emma@example.com",
+              "type": "string"
+            },
+            {
+              "id": "5",
+              "name": "isActive",
+              "value": "false",
+              "type": "boolean"
+            },
+            {
+              "id": "6",
+              "name": "department",
+              "value": "Design",
+              "type": "string"
+            },
+            {
+              "id": "7",
+              "name": "city",
+              "value": "Austin",
+              "type": "string"
+            },
+            {
+              "id": "8",
+              "name": "salary",
+              "value": 72000,
+              "type": "number"
+            },
+            {
+              "id": "9",
+              "name": "skills",
+              "value": [
+                "Figma",
+                "Photoshop",
+                "UI Design"
+              ],
+              "type": "array"
+            },
+            {
+              "id": "10",
+              "name": "joinDate",
+              "value": "2023-07-20",
+              "type": "string"
+            },
+            {
+              "id": "11",
+              "name": "employeeId",
+              "value": "EMP004",
+              "type": "string"
+            },
+            {
+              "id": "12",
+              "name": "experience",
+              "value": 2,
+              "type": "number"
+            },
+            {
+              "id": "13",
+              "name": "isManager",
+              "value": "false",
+              "type": "boolean"
+            },
+            {
+              "id": "14",
+              "name": "phone",
+              "value": "+1-555-0321",
+              "type": "string"
+            },
+            {
+              "id": "15",
+              "name": "projectCount",
+              "value": 5,
+              "type": "number"
+            },
+            {
+              "id": "16",
+              "name": "rating",
+              "value": 4.3,
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c24e2e92-2163-4aab-aba0-db8e762a1796",
+      "name": "Employee 4",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        208,
+        192
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking \"Test Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Employee 1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Employee 2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Employee 3",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Employee 4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "d1052a16-a280-43d7-9a14-1f3fa544cf55",
+  "meta": {
+    "instanceId": "ae59e6b831344dba624c99cbe778a4bc47150f8e64de86a8011d15bac8e58c21"
+  },
+  "id": "FiijWsh1bXIE7K7a",
+  "tags": []
+}

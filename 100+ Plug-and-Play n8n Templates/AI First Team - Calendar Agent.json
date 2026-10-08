@@ -1,0 +1,243 @@
+﻿{
+  "name": "My workflow 26",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "18076912-afd6-4bfa-acc8-b0392e8402ea",
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        1320,
+        1020
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "78f1cab8-3717-43dd-a939-0ba4aba88390",
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        1740,
+        1240
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "hdRYPqX7PaZRro2X",
+          "name": "OpenAi account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "damiandan06@gmail.com",
+          "mode": "list",
+          "cachedResultName": "damiandan06@gmail.com"
+        },
+        "start": "={{ $fromAI(\"starttime\",\"the time the user asks for the event to start\") }}",
+        "end": "={{ $fromAI(\"endtime\",\"the time the user asks for the event to end\") }}",
+        "additionalFields": {}
+      },
+      "id": "77bef865-77ce-4839-8199-d723bb4ea442",
+      "name": "Create Event",
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.2,
+      "position": [
+        1940,
+        1260
+      ],
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "FQqb80U9Tlx584NG",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "damiandan06@gmail.com",
+          "mode": "list",
+          "cachedResultName": "damiandan06@gmail.com"
+        },
+        "returnAll": true,
+        "options": {
+          "timeMin": "={{ $fromAI(\"startDate\", \"the day before the requested date\") }}",
+          "timeMax": "={{ $fromAI(\"endDate\", \"the day after the requested date\") }}"
+        }
+      },
+      "id": "4c246692-7de9-47b9-8514-26ecd2241e6a",
+      "name": "get events",
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.2,
+      "position": [
+        1840,
+        1360
+      ],
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "FQqb80U9Tlx584NG",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c19e1565-8baa-4eb0-ad6a-1c56adb3243c",
+              "name": "response",
+              "value": "={{ $json.output }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "9e31bd73-4e4d-440b-9520-e86ecdbbfe7d",
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2140,
+        1020
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.query }}",
+        "options": {
+          "systemMessage": "=You are a calendar assistant responsible for handling calendar-related tasks. The current date and time is: {{ $now }}\n\nCreating an Event\nIf no end time is given, set the event duration to 60 minutes by default.\nUse this function only when no attendee is involved.\nCreating an Event with an Attendee\nIf an end time is not specified, the event should default to 60 minutes.\nThis function should be used only when an attendee is included.\nRetrieving Events\nUse this function to fetch scheduled events for a specific date.\nExclude any canceled events from the results.\n\n\n\n\n\n\n"
+        }
+      },
+      "id": "2ce749db-903e-4e44-927c-abaa4f479366",
+      "name": "Calendar Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        1760,
+        1020
+      ]
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "damiandan06@gmail.com",
+          "mode": "list",
+          "cachedResultName": "damiandan06@gmail.com"
+        },
+        "start": "={{ $fromAI(\"starttime\",\"the time the user asks for the event to start\") }}",
+        "end": "={{ $fromAI(\"endtime\",\"the time the user asks for the event to end\") }}",
+        "additionalFields": {
+          "attendees": [
+            "{{ $fromAI(\"attendeeEmail\",\"the email of the user asks the event to be scheduled with\") }}"
+          ]
+        }
+      },
+      "id": "9efef84e-f3f5-4826-a25a-e8147d33217c",
+      "name": "Meeting with attendee",
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.2,
+      "position": [
+        2100,
+        1220
+      ],
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "FQqb80U9Tlx584NG",
+          "name": "Google Calendar account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "Calendar Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Calendar Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Event": {
+      "ai_tool": [
+        [
+          {
+            "node": "Calendar Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get events": {
+      "ai_tool": [
+        [
+          {
+            "node": "Calendar Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calendar Agent": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Meeting with attendee": {
+      "ai_tool": [
+        [
+          {
+            "node": "Calendar Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "9ffc86f8-cb87-4451-a0a8-e515a9e3628b",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d1853d6d92799d2de46a947c80ac9a5af91665397cc93a1b568769b332366e37"
+  },
+  "id": "8bEAV1JujTnAwy7i",
+  "tags": []
+}

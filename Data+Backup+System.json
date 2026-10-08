@@ -1,0 +1,194 @@
+﻿{
+  "name": "Data Backup System",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Data Backup System",
+        "formDescription": "Please provide the following information.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Full Name",
+              "placeholder": "Enter your full name",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Email Address",
+              "fieldType": "email",
+              "placeholder": "Please enter your email",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Position Applied For",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Marketing Specialist"
+                  },
+                  {
+                    "option": "Project Manager"
+                  },
+                  {
+                    "option": "Data Analyst"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Resume",
+              "fieldType": "file",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.3,
+      "position": [
+        0,
+        0
+      ],
+      "id": "3fd4c1c7-c31a-443a-9044-020fc1fe8377",
+      "name": "On form submission",
+      "webhookId": "6b333c3d-ba4b-4181-8d19-fbc22782d748"
+    },
+    {
+      "parameters": {
+        "fileName": "={{ $json.Resume[0].filename }}",
+        "fileContent": "Resume"
+      },
+      "type": "n8n-nodes-base.microsoftOneDrive",
+      "typeVersion": 1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "c05d8373-ebb8-4fef-bdd9-824de29281c5",
+      "name": "Upload a file"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1rY0_wq0OK4O-fqewX63Sdx29x2aG2vZ9slS9wbnkKtk",
+          "mode": "list",
+          "cachedResultName": "Data Backup System",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1rY0_wq0OK4O-fqewX63Sdx29x2aG2vZ9slS9wbnkKtk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1rY0_wq0OK4O-fqewX63Sdx29x2aG2vZ9slS9wbnkKtk/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Full Name": "={{ $('On form submission').item.json['Full Name'] }}",
+            "Email": "={{ $('On form submission').item.json['Email Address'] }}",
+            "Position Applied For": "={{ $('On form submission').item.json['Position Applied For'] }}",
+            "File URL": "={{ $json.webUrl }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Full Name",
+              "displayName": "Full Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Position Applied For",
+              "displayName": "Position Applied For",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "File URL",
+              "displayName": "File URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        416,
+        0
+      ],
+      "id": "5fdb2624-84b3-4036-aae3-b3291374e483",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "VjB52JghQlX5ZmcR",
+          "name": "Google Sheets n8n"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Upload a file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload a file": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "04a6f40c-d955-4f14-847a-583be2011241",
+  "meta": {
+    "instanceId": "8ec8bfddbd59fdde442d5ed0bec9c8e336f78ad4e7b2c1393fe111ac5a29897c"
+  },
+  "id": "5o5ZUNxcwBp4tvv3",
+  "tags": []
+}

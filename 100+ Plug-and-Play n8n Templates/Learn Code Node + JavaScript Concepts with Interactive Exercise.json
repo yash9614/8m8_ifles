@@ -1,0 +1,282 @@
+﻿{
+  "name": "Learn Code Node + JavaScript Concepts with Interactive Exercise",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "38ce3db6-ce1d-4091-9645-39e674ad1782",
+              "name": "users",
+              "type": "array",
+              "value": "=[{\"firstName\":\"Alice\",\"lastName\":\"Smith\",\"birthDate\":\"1990-05-15\"},{\"firstName\":\"Bob\",\"lastName\":\"Jones\",\"birthDate\":\"1985-11-22\"},{\"firstName\":\"Charlie\",\"lastName\":\"Brown\",\"birthDate\":\"2001-02-10\"}, {\"firstName\":\"Alex\",\"lastName\":\"Garcia\",\"birthDate\":\"1995-07-30\"}]"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a91acd36-1584-4c31-848d-e238f576421b",
+      "name": "1. Sample Data",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -2000,
+        624
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "users",
+        "options": {}
+      },
+      "id": "221e5ae9-ac7c-4431-bbf8-e1af2a924e6d",
+      "name": "2. Split Out Users",
+      "type": "n8n-nodes-base.splitOut",
+      "position": [
+        -1776,
+        624
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// This code runs for EACH user individually.\n\n// 1. Get the data for the current item\nconst user = $input.item.json;\n\n// 2. Perform operations\nconst fullName = `${user.firstName} ${user.lastName}`;\n\nconst birthDate = new Date(user.birthDate);\nconst ageDiffMs = Date.now() - birthDate.getTime();\nconst ageDate = new Date(ageDiffMs);\nconst age = Math.abs(ageDate.getUTCFullYear() - 1970);\n\nconsole.log(`Processing user: ${fullName}, Age: ${age}`);\n\n// 3. Return the new data, keeping the original fields\nreturn {\n  ...user, // This keeps the original data (firstName, lastName, etc.)\n  fullName: fullName,\n  age: age\n};"
+      },
+      "id": "ed00362f-d32d-496e-921c-c3da95f67d33",
+      "name": "3. Process Each User",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        -1456,
+        624
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "jsCode": "// This code runs only ONCE for ALL users.\n\n// 1. Get all items from the previous node\nconst allUsers = $items();\n\n// 2. Perform an aggregation\nconst totalAge = allUsers.reduce((sum, item) => {\n  return sum + item.json.age;\n}, 0);\n\nconst userCount = allUsers.length;\nconst averageAge = totalAge / userCount;\n\nconsole.log(`Calculated average age for ${userCount} users.`);\n\n// 3. Return a single new item with the result\nreturn [\n  {\n    json: {\n      totalUsers: userCount,\n      averageAge: parseFloat(averageAge.toFixed(2)) // Format to 2 decimal places\n    }\n  }\n];"
+      },
+      "id": "3b2fc698-7a8c-4a0d-abe6-8b0b9c26330a",
+      "name": "5. Calculate Average Age",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        -656,
+        624
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// ADVANCED: This code calls an external API for each user.\n\n// 1. Get the data for the current item\nconst user = $input.item.json;\n\n// 2. Use a helper function to make an HTTP request\n// We'll use a free API to guess the gender based on the first name.\nconst url = `https://api.genderize.io?name=${user.firstName}`;\n\nconsole.log(`Fetching external data for ${user.firstName} from ${url}`)\n\n// this.helpers.httpRequest is a powerful built-in function.\n// We use 'await' because it's an asynchronous operation.\nconst response = await this.helpers.httpRequest({ url: url, json: true });\n\n// 3. Return the original data merged with the new API data\nreturn {\n  ...user, // Keep all existing data (fullName, age, etc.)\n  gender: response.gender,\n  genderProbability: response.probability\n};"
+      },
+      "id": "b4f301fc-780d-4107-935a-28508aef6341",
+      "name": "4. Fetch External Data (Advanced)",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        -1056,
+        624
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "content": "#### â–¶ï¸ STARTING POINT: Sample Data\n\nThese nodes prepare our data for the tutorial.\n\n1.  **`1. Sample Data`**: Creates a list of users. Feel free to edit the values here to experiment!\n2.  **`2. Split Out Users`**: Splits the list into multiple items, one for each user. This is necessary so the next Code nodes can process them one by one.",
+        "height": 420,
+        "width": 440,
+        "color": 5
+      },
+      "id": "62efc367-4e2c-47ba-9adf-57ddce3d45c5",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -2064,
+        384
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "#### âš™ï¸ LESSON 1: Processing Each Item\n\nThis node is in **\"Run Once for Each Item\"** mode. It executes once for every user.\n\n**Goal:** Enrich each user's data.\n\n**Key Concepts:**\n*   `$input.item.json`: Accesses the data of the *current* item being processed.\n*   `return { ... }`: Returns an object that becomes the new output for the item. The `...user` trick keeps the original data.\n\n\nRun the workflow and check this node's output: you'll see multiple items, each with a new `fullName` and `age`.",
+        "height": 580,
+        "width": 380,
+        "color": 7
+      },
+      "id": "876fd94e-9762-4a11-96a3-c108bb91d051",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1600,
+        224
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "#### ðŸš€ ADVANCED LESSON 2: Using Helpers\n\nThis node also runs for each item, but demonstrates a powerful, advanced feature.\n\n**Goal:** Enrich data by calling an external API from code.\n\n**Key Concepts:**\n*   `this.helpers.httpRequest`: A built-in function to make API calls directly. This is great for dynamic URLs or when you need to add logic before or after the call.\n*   `await`: We use this because making an API call is an *asynchronous* operation.\n\n\nCheck the output: each user now has `gender` data fetched from the web!",
+        "height": 600,
+        "width": 380,
+        "color": 6
+      },
+      "id": "23a9a97c-b046-4e50-9b9f-49da38dc4546",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1200,
+        208
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "#### âš™ï¸ LESSON 3: Processing All Items at Once\n\nThis node is in **\"Run Once for All Items\"** mode. It runs only once and sees all items at the same time.\n\n**Goal:** Aggregate data to create a summary.\n\n**Key Concepts:**\n*   `$items()`: Returns an **array** of all items from the previous node.\n*   `return [ { json: { ... } } ]`: Returns an array containing a single new item with the final result.\n\n\nCheck this node's output: there is only one item containing the total user count and their average age.",
+        "height": 580,
+        "width": 380,
+        "color": 7
+      },
+      "id": "aaffc24f-9e1c-44f5-b9bb-54ce65f3c770",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -800,
+        224
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "jsCode": "// LESSON 4 (EXPERT): Creating a binary file.\n\n// This node runs only ONCE for ALL items.\n\n// 1. Get all items from the previous node\nconst allUsers = $(\"4. Fetch External Data (Advanced)\").all();\n\n// 2. Create a CSV string from the data\nlet csvContent = \"FullName,Age,GenderGuess,ProcessedBy\\n\"; // CSV Header\n\nfor (const item of allUsers) {\n  const user = item.json;\n  const row = `\"${user.fullName}\",${user.age},${user.gender},n8n`;\n  csvContent += row + \"\\n\";\n}\n\n// 3. Use a helper to create a binary file from the string\nconst binaryData = await this.helpers.prepareBinaryData(Buffer.from(csvContent), 'user_report.csv');\n\n// 4. Return a new item containing the binary data\nreturn [\n  {\n    json: {\n      reportGenerated: new Date().toISOString(),\n      userCount: allUsers.length\n    },\n    binary: {\n      'report': binaryData\n    }\n  }\n];"
+      },
+      "id": "c5ee0a5f-cad3-4987-8c4b-fd11ead9a423",
+      "name": "6. Create a Binary File (Expert)",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        -256,
+        624
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "content": "#### ðŸ“„ EXPERT LESSON 4: Creating Files\n\n**Goal:** Aggregate all items and generate a binary file (like a CSV in that case).\n**Mode:** `Run Once for All Items`\n\n**Key Concepts:**\n*   `$(\"4. Fetch External Data (Advanced)\").all()`: Gets an array of ALL items from the 4th step.\n*   `this.helpers.prepareBinaryData`: Converts raw data (like a text string) into a proper binary file that n8n can use.\n*   `Buffer`: A standard way to handle binary data in JavaScript.",
+        "height": 580,
+        "width": 380,
+        "color": 3
+      },
+      "id": "1989dfc3-d395-4153-bcb5-7b46d04839dc",
+      "name": "Sticky Note4",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -400,
+        224
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {},
+      "id": "71304ab6-3fd0-4b94-96e6-c3dfde9f76bd",
+      "name": "Start Tutorial",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        -2288,
+        624
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Set up steps\n\nThis workflow is a self-contained tutorial and requires no setup.\n\n1. Explore the Nodes: Click on each of the Code nodes to read the code and the comments explaining each step, from basic to advanced.\n\n2. Run the Workflow: Click \"Execute Workflow\" to see it in action.\n\n3. Check the Output: Click on each node after the execution to see how the data is transformed at each stage. Notice how the data is progressively enriched.\n\n4. Experiment! Try changing the data in the 1. Sample Data node, or modify the code in the Code nodes to see what happens.",
+        "height": 464,
+        "width": 656,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2896,
+        96
+      ],
+      "id": "c047553f-8936-4944-9081-2661a8e2fac4",
+      "name": "Sticky Note5"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "1. Sample Data": {
+      "main": [
+        [
+          {
+            "node": "2. Split Out Users",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Start Tutorial": {
+      "main": [
+        [
+          {
+            "node": "1. Sample Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "2. Split Out Users": {
+      "main": [
+        [
+          {
+            "node": "3. Process Each User",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "3. Process Each User": {
+      "main": [
+        [
+          {
+            "node": "4. Fetch External Data (Advanced)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "5. Calculate Average Age": {
+      "main": [
+        [
+          {
+            "node": "6. Create a Binary File (Expert)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "4. Fetch External Data (Advanced)": {
+      "main": [
+        [
+          {
+            "node": "5. Calculate Average Age",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "de685f87-cc44-466b-ae15-583fefd3337e",
+  "meta": {
+    "instanceId": "ae59e6b831344dba624c99cbe778a4bc47150f8e64de86a8011d15bac8e58c21"
+  },
+  "id": "DDjId1I3obciTVJ1",
+  "tags": []
+}

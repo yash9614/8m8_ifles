@@ -1,0 +1,89 @@
+﻿{
+  "name": "JavaScript Functions",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "ed4da6f0-6717-4d92-8617-5ef43f263e75",
+      "name": "When clicking â€˜Execute workflowâ€™"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"string\": \"Welcome to AI Masters!\",\n  \"number\": 42,\n  \"array\": [\"Zapier\", \"Notion\", \"n8n\", \"ChatGPT\"],\n  \"object\": {\n    \"courseName\": \"n8n course\",\n    \"studentsEnrolled\": 10000,\n    \"instructor\": \"Krystian Wojtarowicz\"\n  },\n  \"bool\": false\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        192,
+        0
+      ],
+      "id": "aa77d534-9b0b-4522-afa2-4bc03034acbd",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f5d5c32e-7401-43bb-b6ac-ddf8f49df5c1",
+              "name": "example",
+              "value": "={{ $json.array.join(\", \") }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        384,
+        0
+      ],
+      "id": "f998ac02-ab84-4854-9b60-9df7853d6e99",
+      "name": "Edit Fields1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking â€˜Execute workflowâ€™": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "772f513f-e09c-49ea-82ee-3fc165d367cf",
+  "meta": {
+    "instanceId": "8ec8bfddbd59fdde442d5ed0bec9c8e336f78ad4e7b2c1393fe111ac5a29897c"
+  },
+  "id": "maxuQrTCNWnENDqc",
+  "tags": []
+}

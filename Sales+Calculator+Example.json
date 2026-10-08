@@ -1,0 +1,87 @@
+﻿{
+  "name": "Sales Calculator Example",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "01693f2d-0aef-46f5-a66d-6b416f599a3c",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        -160,
+        16
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "12345",
+              "name": "salesData",
+              "type": "array",
+              "value": "[{\"product\":\"Laptop\",\"quantity\":5,\"unitPrice\":999.99,\"date\":\"2024-01-15\"},{\"product\":\"Mouse\",\"quantity\":12,\"unitPrice\":29.99,\"date\":\"2024-01-15\"},{\"product\":\"Keyboard\",\"quantity\":8,\"unitPrice\":79.99,\"date\":\"2024-01-16\"},{\"product\":\"Monitor\",\"quantity\":3,\"unitPrice\":299.99,\"date\":\"2024-01-16\"},{\"product\":\"Laptop\",\"quantity\":2,\"unitPrice\":999.99,\"date\":\"2024-01-17\"}]"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "661a6ec2-21cb-4f88-965c-d82d5782c84e",
+      "name": "Sales Data",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        48,
+        16
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get sales data\nconst items = $input.all();\nconst sales = items[0].json.salesData;\n\n// Calculate totals for each sale\nconst salesWithTotals = sales.map(sale => ({\n  ...sale,\n  totalPrice: sale.quantity * sale.unitPrice\n}));\n\n// Calculate overall statistics\nconst totalRevenue = salesWithTotals.reduce((sum, sale) => sum + sale.totalPrice, 0);\nconst totalQuantity = sales.reduce((sum, sale) => sum + sale.quantity, 0);\nconst averageOrderValue = totalRevenue / sales.length;\n\n// Group by product for analysis\nconst productSummary = {};\nsalesWithTotals.forEach(sale => {\n  if (!productSummary[sale.product]) {\n    productSummary[sale.product] = {\n      product: sale.product,\n      totalQuantity: 0,\n      totalRevenue: 0,\n      orderCount: 0\n    };\n  }\n  productSummary[sale.product].totalQuantity += sale.quantity;\n  productSummary[sale.product].totalRevenue += sale.totalPrice;\n  productSummary[sale.product].orderCount += 1;\n});\n\n// Convert to array and add calculations\nconst productAnalysis = Object.values(productSummary).map(product => ({\n  ...product,\n  averageOrderValue: product.totalRevenue / product.orderCount,\n  revenuePercentage: (product.totalRevenue / totalRevenue * 100).toFixed(2)\n}));\n\n// Find best performers\nconst bestSellingProduct = productAnalysis.reduce((best, current) => \n  current.totalQuantity > best.totalQuantity ? current : best\n);\n\nconst highestRevenueProduct = productAnalysis.reduce((best, current) => \n  current.totalRevenue > best.totalRevenue ? current : best\n);\n\nreturn {\n  summary: {\n    totalOrders: sales.length,\n    totalRevenue: parseFloat(totalRevenue.toFixed(2)),\n    totalQuantity: totalQuantity,\n    averageOrderValue: parseFloat(averageOrderValue.toFixed(2))\n  },\n  bestPerformers: {\n    bestSelling: bestSellingProduct.product,\n    highestRevenue: highestRevenueProduct.product\n  },\n  productAnalysis: productAnalysis,\n  salesWithTotals: salesWithTotals\n};"
+      },
+      "id": "3eba0561-c734-4820-b69c-4d9bc445c8ef",
+      "name": "Sales Calculator",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        240,
+        16
+      ],
+      "typeVersion": 2
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Sales Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sales Data": {
+      "main": [
+        [
+          {
+            "node": "Sales Calculator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "877d44c6-3c37-4115-9223-41faeb35b668",
+  "meta": {
+    "instanceId": "ae59e6b831344dba624c99cbe778a4bc47150f8e64de86a8011d15bac8e58c21"
+  },
+  "id": "aeq65tEhHf2azsX4",
+  "tags": []
+}

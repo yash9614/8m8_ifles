@@ -1,0 +1,97 @@
+﻿{
+  "name": "Retell AI Voice Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Service Discovery Call",
+        "formDescription": "It's a service call - weâ€™d love to understand your needs and how we can help.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "What is your first name?",
+              "placeholder": "Damian Dan",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "What is the best phone number to reach you?",
+              "placeholder": "xxxxxxx",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Please enter your email address.",
+              "placeholder": "damiandanxx@gmail.com",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Which service are you most interested in?",
+              "placeholder": "Intrested in AI Agents and automation services",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2f7d42fd-0761-44b2-a296-04e9f3652f2f",
+      "name": "On form submission",
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "25303682-10e5-4758-bde8-a46c17c02363"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.retellai.com/v2/create-phone-call",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer PLEASE_PASTE_YOUR_BEARER_TOKEN_HERE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={\n  \"from_number\": \"+441445700144\",\n  \"to_number\": \"+{{ $json['What is the best phone number to reach you?'] }}\",\n  \"override_agent_id\": \"agent_fc102823dc204a7b89bb39873c\",\n  \"retell_llm_dynamic_variables\": {\n    \"first_name\": \"{{ $json['What is your first name?'] }}\",\n    \"email\": \"{{ $json['Please enter your email address.'] }}\",\n    \"service\": \"{{ $json['Which service are you most interested in?'] }}\"\n  }\n}",
+        "options": {}
+      },
+      "id": "5628644a-4f5e-4151-8b83-fe90826b84f0",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        220,
+        0
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "34095e73-49b4-43ac-88e8-a363d7ce3250",
+  "meta": {
+    "instanceId": "ae59e6b831344dba624c99cbe778a4bc47150f8e64de86a8011d15bac8e58c21"
+  },
+  "id": "nwaeuUdoKMIff0uK",
+  "tags": []
+}

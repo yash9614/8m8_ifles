@@ -1,0 +1,13 @@
+﻿{
+    "mcpServers": {
+     "n8n": {
+         "command": "npx",
+         "args": [
+           "-y",
+           "supergateway",
+           "--sse",
+           "REPLACE-ME-WITH-N8N-WEBHOOK-URL"
+         ]
+       }
+   }
+  }

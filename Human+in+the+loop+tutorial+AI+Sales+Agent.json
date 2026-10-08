@@ -1,0 +1,442 @@
+﻿{
+  "name": "Human in the loop tutorial",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "authentication": "airtableTokenApi",
+        "baseId": {
+          "__rl": true,
+          "value": "appCAYoy0nyibuJ6R",
+          "mode": "id"
+        },
+        "tableId": {
+          "__rl": true,
+          "value": "tblfpz3gJqT5pjdR2",
+          "mode": "id"
+        },
+        "triggerField": "Created",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.airtableTrigger",
+      "typeVersion": 1,
+      "position": [
+        -784,
+        -48
+      ],
+      "id": "e5787a36-0628-4678-8e6f-51ab2da00711",
+      "name": "Airtable Trigger",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "sqO5ueXPaoMEQImm",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.2,
+      "position": [
+        -64,
+        304
+      ],
+      "id": "01a16972-95d2-4cb0-8e6a-ed87ba1cdcef",
+      "name": "Anthropic Chat Model",
+      "credentials": {
+        "anthropicApi": {
+          "id": "GMfzU3YMTR5APUpD",
+          "name": "Anthropic account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appCAYoy0nyibuJ6R",
+          "mode": "list",
+          "cachedResultName": "Human in the loop",
+          "cachedResultUrl": "https://airtable.com/appCAYoy0nyibuJ6R"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblbXhuRYCKnOkmcI",
+          "mode": "list",
+          "cachedResultName": "Projects",
+          "cachedResultUrl": "https://airtable.com/appCAYoy0nyibuJ6R/tblbXhuRYCKnOkmcI"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtableTool",
+      "typeVersion": 2.1,
+      "position": [
+        -608,
+        192
+      ],
+      "id": "c587a657-4890-49ea-bc3d-f73ab55e47a1",
+      "name": "Project Database",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "sqO5ueXPaoMEQImm",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Incoming Lead\n\nName: {{ $json.fields.Name }}\n\nEmail: {{ $json.fields.Email }}\n\nIntent: {{ $json.fields.intent }}\n\nBudget: {{ $json.fields.budget }}\n\nCompany Name: {{ $json.fields.companyName }}\n\nProject Description: {{ $json.fields.projectDescription }} \n\nTimeline: {{ $json.fields.timeline }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=Overview\nYou are an expert salesperson for an agency that delivers AI solutions. Your job is to respond to incoming leads by addressing their needs in a professional manner. You will receive information like the lead's project description and timeline, and your goal is to convince them that we are the best AI Agency on the market.\n\nTools\nProject Database â€“ Use this tool to search through previous projects we have completed.\n\nRules\nYou will receive information about a lead, and you need to craft a concise, professional email.\n\nYour main objective is to convince the lead to book a second call. Make them believe that we can deliver their project and exceed expectations.\n\nRetrieve information about relevant past projects to include as proof of capability. Mention the client outcome or result we helped them achieve.\n\nInclude a link to book a call using this link: https://cal.com/damianaiagent\n\nEmail Signature\nSign off emails as:\nDamian, CEO at Adaptify AI\n\nHere is the current date/time: {{ $now }}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        -576,
+        -48
+      ],
+      "id": "7f0c65dd-fbcf-472a-9d39-a1e5e1801af2",
+      "name": "Sales Agent",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"subject\": {\n      \"type\": \"string\",\n      \"description\": \"The subject line of the email\"\n    },\n    \"email\": {\n      \"type\": \"string\",\n      \"description\": \"The body content of the email\"\n    }\n  },\n  \"required\": [\"subject\", \"email\"]\n}\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        352,
+        384
+      ],
+      "id": "235bd81e-8c46-4f91-b78d-398508cefe25",
+      "name": "Structured Output Parser",
+      "notesInFlow": false
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Airtable Trigger').item.json.fields.Email }}",
+        "subject": "={{ $('Sales Agent').item.json.output.subject }}",
+        "emailType": "text",
+        "message": "={{ $('Set Email').item.json.email }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        880,
+        -160
+      ],
+      "id": "f82c59dc-1930-45c0-a342-725780dfc100",
+      "name": "Send Email",
+      "webhookId": "9ae2a2f2-de7c-46a1-93f7-8b2612d40751",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "wBCMmifaUJAlBO5c",
+          "name": "n8ndemosofficial"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash-exp",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        112,
+        304
+      ],
+      "id": "7dcbb3c9-86b3-419b-b7a1-cae4e32984d0",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "X62c0Hmnv8wR95PT",
+          "name": "Google Gemini(PaLM) Api account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Email: {{ $('Set Email').item.json.email }}\n\nFeedback from human: {{ $json.data.text }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=# Overview\nYou are an expert email writer. Your job is to take an incoming email and revise it based on the feedback the human submitted.\n\n## Rules\nSign off emails as Damian, AI Agents Accelerator\nHere is the current date/time: {{ $now }}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        608,
+        -48
+      ],
+      "id": "a27c9432-be82-4f0e-9b53-5ac5de6c2e8e",
+      "name": "Revision Agent"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3800e373-5f7a-4642-8392-d3a4aed9e067",
+              "name": "email",
+              "value": "={{ $json.output.email }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -208,
+        -48
+      ],
+      "id": "7efec78b-34f0-473d-82c2-07af17f52104",
+      "name": "Set Email"
+    },
+    {
+      "parameters": {
+        "operation": "sendAndWait",
+        "subject": "=APPROVAL REQUIRED for New Lead: {{ $('Airtable Trigger').item.json.fields.name }}",
+        "message": "={{ $('Airtable Trigger').item.json.fields.name }} from {{ $('Airtable Trigger').item.json.fields.companyName }} is looking for {{ $('Airtable Trigger').item.json.fields.intent }}. Their budget is {{ $('Airtable Trigger').item.json.fields.budget }} with a(n) {{ $('Airtable Trigger').item.json.fields.timeline }} timeline.\n\n\nPlease approve or decline the sending of this message generated by Jim, our AI Sales Agent.\n\nSubject: {{ $('Sales Agent').item.json.output.subject }}\n\nEmail: {{ $json.email }}",
+        "responseType": "freeText",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -48,
+        -48
+      ],
+      "id": "432f288d-f537-46d9-a734-b63a78c873bc",
+      "name": "Get Feedback",
+      "webhookId": "10605e1c-7bc0-4a9f-b23a-9797cc88449e",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "wBCMmifaUJAlBO5c",
+          "name": "n8ndemosofficial"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputText": "={{ $json.data.text }}",
+        "categories": {
+          "categories": [
+            {
+              "category": "Approved",
+              "description": "The email has been reviewed and accepted as-is. The human explicitly or implicitly expresses approval, indicating that no changes are needed. \n\nExample phrases include:\n\n\"Looks good.\"\n\"Go ahead and send it.\"\n\"This works for me.\"\n\"Approved.\"\n\"No changes needed.\""
+            },
+            {
+              "category": "Declined",
+              "description": "The email has been reviewed, but the human requests modifications before it is sent like tweaks, removing parts, rewording, etc. This could include suggested edits, rewording, or major revisions. \n\nExample phrases include:\n\n\"Can we tweak this part?\"\n\"Needs some changes.\"\n\"Iâ€™d like to reword this.\"\n\"Not quite rightâ€”letâ€™s revise it.\"\n\"Can you adjust this before sending?\"\n\"Don't mention that we can't do that\""
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textClassifier",
+      "typeVersion": 1,
+      "position": [
+        128,
+        -48
+      ],
+      "id": "fcb186d4-9985-4d79-ad6d-15720b86f2df",
+      "name": "Check Feedback"
+    },
+    {
+      "parameters": {
+        "content": "\n",
+        "height": 420,
+        "width": 580,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -864,
+        -96
+      ],
+      "typeVersion": 1,
+      "id": "69f3bc10-2527-4953-91ea-3bda36e96548",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "\n",
+        "height": 500,
+        "width": 580,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        400,
+        -176
+      ],
+      "typeVersion": 1,
+      "id": "888e39ab-e05a-4c36-b1a9-fdd4a0234d46",
+      "name": "Sticky Note"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Airtable Trigger": {
+      "main": [
+        [
+          {
+            "node": "Sales Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anthropic Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Sales Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Revision Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Project Database": {
+      "ai_tool": [
+        [
+          {
+            "node": "Sales Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Sales Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          },
+          {
+            "node": "Revision Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sales Agent": {
+      "main": [
+        [
+          {
+            "node": "Set Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Check Feedback",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Revision Agent": {
+      "main": [
+        [
+          {
+            "node": "Set Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Email": {
+      "main": [
+        [
+          {
+            "node": "Get Feedback",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Feedback": {
+      "main": [
+        [
+          {
+            "node": "Check Feedback",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Feedback": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Revision Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "bc28fdb1-6b4c-4f57-9982-bfe3aab63a5c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ae59e6b831344dba624c99cbe778a4bc47150f8e64de86a8011d15bac8e58c21"
+  },
+  "id": "SL0zEYu0pPoQyHyW",
+  "tags": []
+}

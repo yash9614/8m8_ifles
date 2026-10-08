@@ -1,0 +1,231 @@
+﻿{
+  "name": "Analyst AI Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "symbol"
+            },
+            {
+              "name": "prompt"
+            },
+            {
+              "name": "chat_id"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "1505bcb9-aa9d-47f5-8920-c9ea1d139f5c",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "operation": "sendPhoto",
+        "chatId": "={{ $json.chat_id }}",
+        "binaryData": true,
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        540,
+        -120
+      ],
+      "id": "a66b618f-ca56-4162-baec-cf67fae54a06",
+      "name": "Send a photo message",
+      "webhookId": "2bc92b59-7ff5-49e0-8ec2-b21a24c934f9",
+      "credentials": {
+        "telegramApi": {
+          "id": "3G1bf5W5dRCTRZtN",
+          "name": "Telegram account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "GPT-4O"
+        },
+        "text": "=Please analyze this {{ $json.symbol }} 30-minute candlestick chart image and provide a comprehensive technical analysis covering the following areas:\n\n**1. Candlestick Patterns:**  \n- Identify and describe any notable patterns such as doji, hammer, shooting star, engulfing, morning star, evening star, etc.  \n- Mention what these patterns suggest about the potential future price movement.\n\n**2. Trend Analysis:**  \n- Determine the short-term trend (uptrend, downtrend, sideways) based on the price structure.  \n- Mention any clear higher highs/lows or lower highs/lows.\n\n**3. Support and Resistance Levels:**  \n- Identify key horizontal support and resistance zones based on recent price action.  \n- Highlight any areas where price reversed multiple times.\n\n**4. MACD Indicator Interpretation:**  \n- Analyze the MACD histogram, MACD line, and signal line.  \n- Comment on whether there is a bullish or bearish crossover, divergence, or momentum shift.\n\n**5. Volume Analysis (if visible):**  \n- If volume data is present, comment on volume spikes and what they suggest.\n\nFinish with a summary that gives a probable short-term outlook (bullish, bearish, or neutral) and explain why based on your analysis.\n",
+        "inputType": "base64",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        540,
+        100
+      ],
+      "id": "32e4deb8-e509-460f-96a6-11315cdeaf8e",
+      "name": "Analyze image",
+      "credentials": {
+        "openAiApi": {
+          "id": "GGNW9JnvMJrZ8lu8",
+          "name": "OpenAi account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        860,
+        0
+      ],
+      "id": "b9ad7121-0d89-4ae2-be36-8b9dc42151e3",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4c1f7792-e640-4a17-8ffb-5b3716331d51",
+              "name": "Analysis",
+              "value": "={{ $json.content }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1080,
+        0
+      ],
+      "id": "eeb8d46a-ea96-4692-816f-976ca192effb",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.chart-img.com/v2/tradingview/advanced-chart",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-api-key",
+              "value": "gefDsoQueeakwsb7bF2Rs8GwQ6PYf01q6gmJOXUN"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"theme\": \"dark\",\n  \"symbol\": \"{{ $json.symbol }}\",\n  \"interval\": \"30m\",\n  \"studies\": [\n    {\n      \"name\": \"MACD\"\n    }\n  ]\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        220,
+        0
+      ],
+      "id": "ce890023-84bf-4946-8de7-64528e3d4783",
+      "name": "Get Chart"
+    }
+  ],
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "symbol": "BINANCE:ETHUSD",
+          "prompt": null,
+          "chat_id": 5991557141
+        }
+      }
+    ]
+  },
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Get Chart",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a photo message": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze image": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Chart": {
+      "main": [
+        [
+          {
+            "node": "Send a photo message",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Analyze image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "fe17333a-57d5-4da6-947e-036b29f63240",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f96a7e8659163312cbaf16ad76688747ea79fa6bf8e4ec720c14444abdf2c12c"
+  },
+  "id": "rQqXAzR4RYYgnLvf",
+  "tags": []
+}

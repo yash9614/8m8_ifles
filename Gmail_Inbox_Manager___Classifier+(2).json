@@ -1,0 +1,633 @@
+﻿{
+  "name": "Gmail Inbox Manager & Classifier",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {},
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "496757cb-2d5a-413f-bd4f-898c51a11ad5",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "jU6sp9bIWgtAZlmj",
+          "name": "Gmail account 11"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        140,
+        180
+      ],
+      "id": "f4d86515-fc83-493b-9fb5-ab9d6cba0bfb",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "ZdEXiSHUq5NqHE96",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c144ecb1-6b4a-40f2-85ef-858be919ae07",
+              "leftValue": "={{ $json.output.senderName }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        580,
+        0
+      ],
+      "id": "4041927c-49f9-44b3-8051-c46d85cd25a1",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "17c78a79-67a6-421a-b009-29dbd16844d5",
+              "name": "intro",
+              "value": "=Dear {{ $json.output.senderName }},",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        900,
+        -140
+      ],
+      "id": "60944940-9481-4d6f-b7df-d9a80db2b8a2",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "455417c3-0694-47a0-99b4-7aaf76e7e6a4",
+              "name": "intro",
+              "value": "Hi, ",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        900,
+        140
+      ],
+      "id": "bb760ecc-857f-4a51-87ec-1c160ca8f097",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "text": "={{ $json.text }}",
+        "attributes": {
+          "attributes": [
+            {
+              "name": "senderName",
+              "description": "Extract the sender's name from this email. If no name , return an empty string.",
+              "required": true
+            }
+          ]
+        },
+        "options": {
+          "systemPromptTemplate": "You are an advanced extraction tool. Only pull out the relevant details from the text. If you're unsure about the value of any requested attribute, leave it as an empty string."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.informationExtractor",
+      "typeVersion": 1,
+      "position": [
+        220,
+        0
+      ],
+      "id": "cc875fbe-deab-4f84-9980-72362f189d0f",
+      "name": "Information Extractor"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "fieldsToMatchString": "intro",
+        "joinMode": "keepNonMatches",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.1,
+      "position": [
+        1280,
+        -20
+      ],
+      "id": "ec627536-981d-417e-812b-3ee4c49ad235",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b3e26d0b-6136-413a-b6d5-af2ea75aaaca",
+              "name": "message_id",
+              "value": "={{ $('Gmail Trigger').item.json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "7b33486f-7455-4ea7-b4ca-fe9331bf54ea",
+              "name": "intro",
+              "value": "={{ $json.intro }}",
+              "type": "string"
+            },
+            {
+              "id": "540f6707-d57e-487b-811c-e1ed5b1fd6e5",
+              "name": "threadId",
+              "value": "={{ $('Gmail Trigger').item.json.threadId }}",
+              "type": "string"
+            },
+            {
+              "id": "500fb0d7-544e-4ce9-ba58-e87773e1ddc6",
+              "name": "text",
+              "value": "={{ $('Gmail Trigger').item.json.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1540,
+        -20
+      ],
+      "id": "14fbaa4a-468b-41dc-b0af-28f82a8b72c6",
+      "name": "Clean Data"
+    },
+    {
+      "parameters": {
+        "inputText": "={{ $json.text }}",
+        "categories": {
+          "categories": [
+            {
+              "category": "Services requests",
+              "description": "Questions about consulting services offered, rates, or availability."
+            },
+            {
+              "category": "Consultation requests",
+              "description": "Scheduling initial consultations or follow-up meetings."
+            },
+            {
+              "category": "Payments",
+              "description": "Questions about invoices, payments, or refunds"
+            },
+            {
+              "category": "Others",
+              "description": "Emails that donâ€™t clearly fit into the other categories."
+            }
+          ]
+        },
+        "options": {
+          "systemPromptTemplate": "Please classify the text provided by the user into one of the following categories: {categories}, and use the provided formatting instructions below. Don't explain, and only output the json."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.textClassifier",
+      "typeVersion": 1,
+      "position": [
+        1820,
+        -20
+      ],
+      "id": "6b9f23be-4f64-4101-854c-2e067d714608",
+      "name": "Text Classifier"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "gpt-4o"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1740,
+        240
+      ],
+      "id": "ce360b2f-a746-4b66-8ed4-b3d94d3a9c45",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "ZdEXiSHUq5NqHE96",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $json.message_id }}",
+        "labelIds": [
+          "Label_9093486787642741468"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        2440,
+        -200
+      ],
+      "id": "415de757-6d34-47a0-8e44-ecae6d22ab0a",
+      "name": "Services Request",
+      "webhookId": "a96a31d4-4aee-4401-92c7-1496491ea923",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "jU6sp9bIWgtAZlmj",
+          "name": "Gmail account 11"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $json.message_id }}",
+        "labelIds": [
+          "Label_1894355446052431143"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        2440,
+        0
+      ],
+      "id": "e0228881-334e-48fa-8d54-1b1bd1dfa7e3",
+      "name": "Consultation Requests",
+      "webhookId": "f8de955e-79ca-4534-a146-fa288d53e9c3",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "jU6sp9bIWgtAZlmj",
+          "name": "Gmail account 11"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $json.message_id }}",
+        "labelIds": [
+          "Label_2625483725051495954"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        2440,
+        200
+      ],
+      "id": "5e22ec89-1534-465b-b417-707bbac216d1",
+      "name": "Payments",
+      "webhookId": "dd72b9a7-7d14-472b-8d86-f7e1a9a0cd6e",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "jU6sp9bIWgtAZlmj",
+          "name": "Gmail account 11"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $json.message_id }}",
+        "labelIds": [
+          "Label_4485497711462596905"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        2440,
+        400
+      ],
+      "id": "8188bec0-f58d-4e2b-892a-8af6e868512b",
+      "name": "Others",
+      "webhookId": "ba168146-c21b-46e1-b11d-85e17bbe8639",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "jU6sp9bIWgtAZlmj",
+          "name": "Gmail account 11"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "reply",
+        "messageId": "={{ $json.message_id }}",
+        "emailType": "text",
+        "message": "=Thank you for reaching out to Adaptify AI! Weâ€™re excited to learn about your needs and how we can assist you.\n\nYour inquiry has been received, and a member of our team is reviewing the details. Weâ€™ll get back to you within 24 hours with more information.\n\nIn the meantime, feel free to explore our website for additional details about our services and contact with us via WhatsApp: https://adaptifyai.co.uk/\n\nWe look forward to connecting with you!\n\nBest regards,\nDamian Danelczyk\nFounder & CEO at Adaptify AI",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        2660,
+        -200
+      ],
+      "id": "a6a80f3d-8d2e-4de1-ab7b-7c10bd948822",
+      "name": "Reply to services requests",
+      "webhookId": "5471569b-1d0a-4fb6-ad09-014516b6be94",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "NNxLFai7s0B9qpPy",
+          "name": "Gmail account 9"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "reply",
+        "messageId": "={{ $json.message_id }}",
+        "emailType": "text",
+        "message": "=Thank you for reaching out to Adaptify AI. Weâ€™re excited to learn more about your needs and discuss how we can help.\n\nTo schedule your consultation, please reply to this email with your preferred date and time or use our online booking link here: https://cal.com/damianaiagent.\n\nOnce we receive your preferred time, weâ€™ll confirm the appointment or suggest alternative options if needed.\n\nIf you have any specific topics youâ€™d like to discuss during the consultation, feel free to include them in your reply.\n\nWe look forward to connecting with you!\n\nBest regards,\nDamian Danelczyk\nFounder & CEO at Adaptify AI",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        2660,
+        0
+      ],
+      "id": "1235ec4e-0b19-45d0-a55e-02c41ba42965",
+      "name": "Reply to consultation requests",
+      "webhookId": "413b9fcc-30ef-43fb-ae4f-125189ccfb4b",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "NNxLFai7s0B9qpPy",
+          "name": "Gmail account 9"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "reply",
+        "messageId": "={{ $json.message_id }}",
+        "emailType": "text",
+        "message": "=\nThank you for contacting us regarding your payment/billing inquiry. Weâ€™ve received your message and are working to address your request.\n\nA member of our team will get back to you within 2 working days to provide the necessary information or assistance.\n\nIf this matter is urgent, please call us directly at +44756248xxx.\n\nThank you for your patience and for choosing Adaptify AI.\n\nBest regards,\nDamian Danelczyk\nFounder & CEO at Adaptify AI",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        2660,
+        200
+      ],
+      "id": "5861a299-efe0-4200-9741-6fa7a1f0427a",
+      "name": "Reply to payment-related questions",
+      "webhookId": "a0fda489-eb42-4d02-9157-4d9deaa521e1",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "jU6sp9bIWgtAZlmj",
+          "name": "Gmail account 11"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Information Extractor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Information Extractor",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Information Extractor": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Clean Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clean Data": {
+      "main": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Text Classifier": {
+      "main": [
+        [
+          {
+            "node": "Services Request",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Consultation Requests",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Payments",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Others",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Services Request": {
+      "main": [
+        [
+          {
+            "node": "Reply to services requests",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consultation Requests": {
+      "main": [
+        [
+          {
+            "node": "Reply to consultation requests",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Payments": {
+      "main": [
+        [
+          {
+            "node": "Reply to payment-related questions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "15666e3d-d3e6-446c-b95a-be07ec38f4e4",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ae59e6b831344dba624c99cbe778a4bc47150f8e64de86a8011d15bac8e58c21"
+  },
+  "id": "Jz1z95qEBqhSOB9G",
+  "tags": []
+}

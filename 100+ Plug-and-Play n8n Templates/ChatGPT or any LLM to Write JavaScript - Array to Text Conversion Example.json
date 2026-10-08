@@ -1,0 +1,97 @@
+﻿{
+  "name": "Use ChatGPT or any LLM to Write JavaScript - Array to Text Conversion Example",
+  "nodes": [
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"leads\": [\n    {\n      \"firstName\": \"Alex\",\n      \"lastName\": \"Thompson\",\n      \"email\": \"alex.t@innovate.com\",\n      \"budget\": \"15,000\",\n      \"message\": \"Looking for digital transformation help\",\n      \"date\": \"2024-01-14\",\n      \"rejected\": false,\n      \"called\": true\n    },\n    {\n      \"firstName\": \"Maria\",\n      \"lastName\": \"Garcia\",\n      \"email\": \"maria@localstore.net\",\n      \"budget\": \"8,500\",\n      \"message\": \"Small business automation needs\",\n      \"date\": \"2024-01-15\",\n      \"rejected\": true,\n      \"called\": true\n    },\n    {\n      \"firstName\": \"David\",\n      \"lastName\": \"Kim\",\n      \"email\": \"d.kim@enterprise.co\",\n      \"budget\": \"75,000\",\n      \"message\": \"Enterprise-level solution inquiry\",\n      \"date\": \"2024-01-15\",\n      \"rejected\": false,\n      \"called\": false\n    },\n    {\n      \"firstName\": \"Jessica\",\n      \"lastName\": \"Anderson\",\n      \"email\": \"jessica@startup.tech\",\n      \"budget\": \"12,000\",\n      \"message\": \"Marketing automation consultation\",\n      \"date\": \"2024-01-13\",\n      \"rejected\": false,\n      \"called\": true\n    },\n    {\n      \"firstName\": \"Roberto\",\n      \"lastName\": \"Silva\",\n      \"email\": \"roberto.silva@corp.com\",\n      \"budget\": \"32,000\",\n      \"message\": \"Sales process optimization\",\n      \"date\": \"2024-01-15\",\n      \"rejected\": false,\n      \"called\": false\n    },\n    {\n      \"firstName\": \"Emily\",\n      \"lastName\": \"Watson\",\n      \"email\": \"e.watson@agency.io\",\n      \"budget\": \"6,200\",\n      \"message\": \"Basic workflow setup\",\n      \"date\": \"2024-01-12\",\n      \"rejected\": true,\n      \"called\": false\n    }\n  ]\n}",
+        "options": {}
+      },
+      "id": "4bd769b0-246f-4a0e-84d2-d0b815462ae2",
+      "name": "Sample Lead Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.2,
+      "position": [
+        544,
+        848
+      ]
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        288,
+        848
+      ],
+      "id": "eae7ee27-49a3-4af3-8f0b-dbe9f45a5dab",
+      "name": "When clicking â€˜Execute workflowâ€™"
+    },
+    {
+      "parameters": {
+        "sendTo": "n8ndemos@gmail.com",
+        "subject": "NEW LEADS",
+        "message": "={{ $json.leads }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1008,
+        640
+      ],
+      "id": "de413bb7-32a3-4198-b5b4-7ef9a7161cce",
+      "name": "Send a message",
+      "webhookId": "62a68241-eabd-48e7-9ba4-75158000d74f",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "cW5Hjcy6quo3oJLy",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.myNewField = 1;\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        720,
+        624
+      ],
+      "id": "151e5ae3-ffa0-4305-9239-ebd8e3960374",
+      "name": "Code"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Sample Lead Data": {
+      "main": [
+        []
+      ]
+    },
+    "When clicking â€˜Execute workflowâ€™": {
+      "main": [
+        [
+          {
+            "node": "Sample Lead Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "2cda46f1-7ac2-425d-8561-c09e2122df9d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ae59e6b831344dba624c99cbe778a4bc47150f8e64de86a8011d15bac8e58c21"
+  },
+  "id": "EfplFchlbpH48MUC",
+  "tags": []
+}

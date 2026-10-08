@@ -1,0 +1,252 @@
+﻿{
+  "name": "Customer Service System",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Customer Support",
+        "formDescription": "This form is all about gathering customer requests and problems",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Name",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Last Name",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Email",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Problem Description",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Course Type",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "n8n Course"
+                  },
+                  {
+                    "option": "ChatGPT Course"
+                  },
+                  {
+                    "option": "Zapier Course"
+                  }
+                ]
+              },
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "1b9f1695-98e8-4040-8d1c-a59acf46cfb5",
+      "name": "On form submission",
+      "webhookId": "96cef38b-f975-44d3-8afd-863a554a3208"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "17a2jQqT31DIp9cFeNNPjj7qYhJwubA72owJPQEvIgAQ",
+          "mode": "list",
+          "cachedResultName": "Customer Feedback",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17a2jQqT31DIp9cFeNNPjj7qYhJwubA72owJPQEvIgAQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17a2jQqT31DIp9cFeNNPjj7qYhJwubA72owJPQEvIgAQ/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $json.Name }}",
+            "Last Name": "={{ $json['Last Name'] }}",
+            "Email": "={{ $json.Email }}",
+            "Problem Description": "={{ $json['Problem Description'] }}",
+            "Course Type": "={{ $json['Course Type'] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Last Name",
+              "displayName": "Last Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Problem Description",
+              "displayName": "Problem Description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Course Type",
+              "displayName": "Course Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        220,
+        0
+      ],
+      "id": "3d7c03fe-6ec5-4cb0-93a1-d8a4dccf7ff2",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Fw3te8LvNLsbMiDm",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Email }}",
+        "subject": "Thanks for your submission!",
+        "message": "=Hello  {{ $json.Name }},\nThank you for your form submission, we will be here shortly yo help you with your problem.\n\nBest Regards,\nSupport team",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        440,
+        0
+      ],
+      "id": "2354a6cc-cedd-4fab-869c-869688cb40a7",
+      "name": "Gmail",
+      "webhookId": "7dc905a8-f00c-44b5-ad9e-ec248413c215",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "AHiOovLS2J9y7cN4",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C07PGPHUVLN",
+          "mode": "list",
+          "cachedResultName": "ai"
+        },
+        "text": "=Hey! New client request is here:\nName: {{ $('On form submission').item.json.Name }}\nLast Name: {{ $('On form submission').item.json['Last Name'] }}\nEmail: {{ $('On form submission').item.json.Email }}\nDescription: {{ $('On form submission').item.json['Problem Description'] }}\n\nPlease handle it",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        660,
+        0
+      ],
+      "id": "123d6071-dfbf-4fe5-bf11-ecb27397f6ec",
+      "name": "Slack",
+      "webhookId": "ac5be8ab-6524-43b5-82da-784b154a55bf",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "Z6TX6rb5xjP3BvsW",
+          "name": "Slack account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail": {
+      "main": [
+        [
+          {
+            "node": "Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "9df3d6d7-6dc9-4322-8971-752138164fa7",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f96a7e8659163312cbaf16ad76688747ea79fa6bf8e4ec720c14444abdf2c12c"
+  },
+  "id": "vV9tYLvV4YW4WsQk",
+  "tags": []
+}

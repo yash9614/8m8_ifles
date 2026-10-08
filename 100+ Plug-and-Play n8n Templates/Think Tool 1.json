@@ -1,0 +1,169 @@
+﻿{
+  "name": "Think Tool 1",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.chatInput }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        220,
+        -20
+      ],
+      "id": "97851074-8d6b-41a8-ba7e-2c635a95daaf",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "gpt-4o"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        60,
+        300
+      ],
+      "id": "f54fc264-f5d2-4f19-90b7-44c26bfbe1e2",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "QivR7SxB24l8KozV",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolThink",
+      "typeVersion": 1,
+      "position": [
+        400,
+        300
+      ],
+      "id": "3eab4ec0-ff18-4419-8115-d270dd718c18",
+      "name": "Think"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        20,
+        -20
+      ],
+      "id": "6751cb61-ae4a-497a-bdeb-e05a2a59b948",
+      "name": "When chat message received",
+      "webhookId": "68072477-1fa4-4518-9ae8-7128661fd04f"
+    },
+    {
+      "parameters": {
+        "content": "## AI Agent",
+        "height": 280,
+        "width": 700
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        -120
+      ],
+      "id": "5b8dfb5a-2fb1-4e03-b636-f7545824a92e",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Model",
+        "height": 300,
+        "width": 340,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        180
+      ],
+      "id": "abdc2fff-6c82-4e88-8495-6c0505596f76",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Think Node",
+        "height": 300,
+        "width": 340,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        280,
+        180
+      ],
+      "id": "fd953db9-d2d9-460c-b4c1-fe25d176e018",
+      "name": "Sticky Note2"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        []
+      ]
+    },
+    "Think": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "2464fe12-93cc-4b6d-98ab-e702562c03ed",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f96a7e8659163312cbaf16ad76688747ea79fa6bf8e4ec720c14444abdf2c12c"
+  },
+  "id": "NqGVUYCvEKD6P5t4",
+  "tags": []
+}

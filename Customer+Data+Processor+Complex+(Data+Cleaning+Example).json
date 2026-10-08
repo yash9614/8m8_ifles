@@ -1,0 +1,87 @@
+﻿{
+  "name": "Customer Data Processor Complex (Data Cleaning Example)",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "07cb3a9a-00c8-41c6-91a3-df65ad89e13b",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        0,
+        0
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "12345",
+              "name": "customers",
+              "type": "array",
+              "value": "[{\"name\":\"John Smith\",\"email\":\"john@email.com\",\"phone\":\"555-123-4567\",\"company\":\"ABC Corp\",\"revenue\":\"$25,000\"},{\"name\":\"Jane Doe\",\"email\":\"jane@company.co.uk\",\"phone\":\"555-987-6543\",\"company\":\"XYZ Ltd\",\"revenue\":\"$45,000\"},{\"name\":\"Bob Wilson\",\"email\":\"bob@test.com\",\"phone\":\"555-111-2222\",\"company\":\"Tech Inc\",\"revenue\":\"$12,500\"}]"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ad6213d1-4a68-4f87-accc-bb49bb5e6c47",
+      "name": "Raw Customer Data",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        208,
+        0
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get customer data that needs cleaning\nconst items = $input.all();\nconst customers = items[0].json.customers;\n\n// Transform each customer record\nconst processedCustomers = customers.map(customer => {\n  // Convert revenue string to actual number\n  const revenueNumber = parseFloat(customer.revenue.replace(/[$,]/g, ''));\n  \n  // Determine customer tier based on revenue\n  let tier;\n  if (revenueNumber >= 40000) {\n    tier = 'Premium';\n  } else if (revenueNumber >= 20000) {\n    tier = 'Standard';\n  } else {\n    tier = 'Basic';\n  }\n  \n  // Extract country from email domain\n  const domain = customer.email.split('@')[1];\n  const isUK = domain.includes('.uk');\n  const country = isUK ? 'United Kingdom' : 'United States';\n  \n  // Format phone for display\n  const formattedPhone = `(${customer.phone.slice(0,3)}) ${customer.phone.slice(3,6)}-${customer.phone.slice(6)}`;\n  \n  return {\n    // Original data (cleaned)\n    name: customer.name,\n    email: customer.email,\n    phone: formattedPhone,\n    company: customer.company,\n    \n    // NEW calculated fields\n    revenueAmount: revenueNumber,\n    customerTier: tier,\n    country: country,\n    \n    // Business logic fields\n    isHighValue: revenueNumber >= 25000,\n    needsAccountManager: tier === 'Premium',\n    emailDomain: domain\n  };\n});\n\n// Calculate summary statistics\nconst totalRevenue = processedCustomers.reduce((sum, customer) => sum + customer.revenueAmount, 0);\nconst averageRevenue = totalRevenue / processedCustomers.length;\nconst highValueCount = processedCustomers.filter(c => c.isHighValue).length;\n\nreturn {\n  processedCustomers: processedCustomers,\n  summary: {\n    totalCustomers: processedCustomers.length,\n    totalRevenue: totalRevenue,\n    averageRevenue: Math.round(averageRevenue),\n    highValueCustomers: highValueCount,\n    premiumCustomers: processedCustomers.filter(c => c.customerTier === 'Premium').length\n  },\n  message: `Processed ${processedCustomers.length} customers with advanced business logic`\n};"
+      },
+      "id": "a1441e60-97c6-41f5-8445-8c75745b22b9",
+      "name": "Customer Data Processor",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        400,
+        0
+      ],
+      "typeVersion": 2
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Raw Customer Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Raw Customer Data": {
+      "main": [
+        [
+          {
+            "node": "Customer Data Processor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "0c74558f-989b-40d2-8fb6-75818d71d149",
+  "meta": {
+    "instanceId": "ae59e6b831344dba624c99cbe778a4bc47150f8e64de86a8011d15bac8e58c21"
+  },
+  "id": "nh0Ki6SeDDBPZpsC",
+  "tags": []
+}

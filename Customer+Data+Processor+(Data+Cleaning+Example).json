@@ -1,0 +1,87 @@
+﻿{
+  "name": "Customer Data Processor (Data Cleaning Example)",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "ba238858-5815-4b91-877d-1f3996b34b39",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        368,
+        368
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "12345",
+              "name": "customers",
+              "type": "array",
+              "value": "[{\"name\":\"John Smith\",\"email\":\"john@email.com\",\"phone\":\"555-123-4567\",\"company\":\"ABC Corp\",\"revenue\":\"$25,000\"},{\"name\":\"Jane Doe\",\"email\":\"jane@company.co.uk\",\"phone\":\"555-987-6543\",\"company\":\"XYZ Ltd\",\"revenue\":\"$45,000\"},{\"name\":\"Bob Wilson\",\"email\":\"bob@test.com\",\"phone\":\"555-111-2222\",\"company\":\"Tech Inc\",\"revenue\":\"$12,500\"}]"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "4c192f6a-b1c6-4a8c-bc0b-5b94b32919bd",
+      "name": "Raw Customer Data",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        576,
+        368
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the customer data\nconst items = $input.all();\nconst customers = items[0].json.customers;\n\n// Process each customer\nconst cleanedCustomers = customers.map(customer => {\n  // Convert \"$25,000\" to 25000\n  const revenue = customer.revenue.replace('$', '').replace(',', '');\n  \n  // Add customer tier\n  let tier = 'Basic';\n  if (revenue >= 40000) tier = 'Premium';\n  if (revenue >= 20000) tier = 'Standard';\n  \n  return {\n    name: customer.name,\n    email: customer.email,\n    phone: customer.phone,\n    company: customer.company,\n    revenue: revenue,\n    tier: tier\n  };\n});\n\nreturn {\n  customers: cleanedCustomers,\n  message: `Processed ${cleanedCustomers.length} customers`\n};"
+      },
+      "id": "0bc7eef0-e815-4391-8f5b-ff7a63368b7d",
+      "name": "Customer Data Processor",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        768,
+        368
+      ],
+      "typeVersion": 2
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Raw Customer Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Raw Customer Data": {
+      "main": [
+        [
+          {
+            "node": "Customer Data Processor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "09c6e826-4a9e-4ef0-8e17-226463f98c6e",
+  "meta": {
+    "instanceId": "ae59e6b831344dba624c99cbe778a4bc47150f8e64de86a8011d15bac8e58c21"
+  },
+  "id": "I6bLoLoCYgLpEolf",
+  "tags": []
+}

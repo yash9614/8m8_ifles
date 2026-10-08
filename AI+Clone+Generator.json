@@ -1,0 +1,531 @@
+﻿{
+  "name": "AI Clone Generator",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -60,
+        0
+      ],
+      "id": "9f5bc0a2-a2b6-4b96-8840-3529f71d1fd3",
+      "name": "When chat message received",
+      "webhookId": "0e766827-8827-4efb-b641-e42cbc61c3f5"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Prompt: {{ $json.chatInput }}",
+        "options": {
+          "systemMessage": "=** Purpose **\n\nCreate short, high-impact YouTube Shorts transcripts that grab attention immediately, keep viewers engaged, and clearly deliver a single key message. \nThe transcript should be ready to record as a video (spoken in a natural, energetic tone).\n\n** How It Works **\nWhen you receive a topic or key idea, follow this process:\n\n1. Understand the Core Message\n\n- Treat the input as the main idea to build the short around.\n- Focus on delivering one key point or insight clearly and quickly.\n- Aim to hook, deliver, and end â€” all within 45â€“60 seconds of spoken content.\n\n2. Write the Transcript\n\n- Start with a strong hook â€” a bold statement, surprising fact, or urgent question to grab attention in the first 3 seconds.\n- Keep the tone conversational, energetic, and clear â€” write how you'd speak on camera.\n- Use simple language, short sentences, and a sense of momentum to keep the viewer watching.\n- Deliver one key idea or insight that adds real value or a wow moment.\n- End with a clear call to action (like, comment, follow, think, or try something).\n- Optionally include one punchy closing line to make it memorable.\n\n** Output Rules **\nOnly output the final transcript.\n\n- Do not explain the transcript or describe your process.\n- Do not use quotation marks unless quoting someone or something specific.\n- Do not include notes, formatting, or line breaks â€” just plain text that can be spoken naturally.\n- Keep the length under 120 words unless otherwise requested.\n\n** Sample Use Case **\n\nTopic: How AI saves hours of repetitive work\nâ†’ You generate a transcript with a fast hook, a clear example or benefit, and a CTA like â€œTry it and save 5 hours this week.â€"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        120,
+        0
+      ],
+      "id": "2d304649-5c36-464a-accb-0d57b6882cf7",
+      "name": "Transcript AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        100,
+        160
+      ],
+      "id": "18118b1e-8c0f-49a0-a11a-449b47597d5e",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "0qLMfnxIrfTptc0E",
+          "name": "OpenAi account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        440,
+        160
+      ],
+      "id": "e1043d5e-f30e-4d0d-8c8a-6184e18fca4e",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "0qLMfnxIrfTptc0E",
+          "name": "OpenAi account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Prompt: {{ $json.output }}",
+        "options": {
+          "systemMessage": "=** Goal **\n\nBased on the transcript create short and catchy title for the content. Use simple language, provide clean, plain title without any other elements"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        440,
+        0
+      ],
+      "id": "7552d478-1304-44a8-8ff9-1af62a3f6769",
+      "name": "Title AI Agent"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.heygen.com/v2/video/generate",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Api-Key",
+              "value": "MzUzZTgzYmEzZjE5NDhjZjkzODhiNmI2MjU0ZjJjYjQtMTc1MTEwNTg2NA=="
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"video_inputs\": [\n    {\n      \"character\": {\n        \"type\": \"avatar\",\n        \"avatar_id\": \"8920236bc0154863b29435f6d6b83e02\",\n        \"avatar_style\": \"normal\"\n      },\n      \"voice\": {\n        \"type\": \"text\",\n        \"input_text\": \"{{ $('Transcript AI Agent').item.json.output }}\",\n        \"voice_id\": \"f69f374b3e554b4191becb37e4048784\",\n        \"speed\": 1.1\n      }\n    }\n  ],\n  \"dimension\": {\n    \"width\": 1280,\n    \"height\": 720\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        800,
+        0
+      ],
+      "id": "7db20ece-8856-44bd-ac31-5be42a99d20e",
+      "name": "Generate Video"
+    },
+    {
+      "parameters": {
+        "amount": 60
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        980,
+        0
+      ],
+      "id": "f29e7b67-d66c-467f-ac08-231ee7a2bcac",
+      "name": "Wait 1 Minute",
+      "webhookId": "81c39849-4bcb-4cb0-90c7-4b9e75c92aa6"
+    },
+    {
+      "parameters": {
+        "url": "https://api.heygen.com/v1/video_status.get",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "video_id",
+              "value": "={{ $('Generate Video').item.json.data.video_id }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Api-Key",
+              "value": "MzUzZTgzYmEzZjE5NDhjZjkzODhiNmI2MjU0ZjJjYjQtMTc1MTEwNTg2NA=="
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1340,
+        0
+      ],
+      "id": "e67c4990-6ecc-497c-8e0e-e64f0aa258d1",
+      "name": "Get Video"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "653ac037-a394-45af-aa02-64952c2f608e",
+              "leftValue": "={{ $json.data.video_url }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1560,
+        0
+      ],
+      "id": "0c2f0fa0-da3d-45e4-be2b-de55d3cea4c4",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "amount": 10
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1700,
+        180
+      ],
+      "id": "4fab9d1e-fb3a-4aab-aa25-bafad1c89783",
+      "name": "Wait For 10 Seconds",
+      "webhookId": "2ef59b79-d103-486e-82d2-f809109966fb"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.data.video_url }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1860,
+        -20
+      ],
+      "id": "bc03780d-16ec-4dd0-8062-0ff0645779fd",
+      "name": "Download Video"
+    },
+    {
+      "parameters": {
+        "content": "# Create Video Content",
+        "height": 640,
+        "width": 1320
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -160,
+        -180
+      ],
+      "id": "64543236-4019-42d3-816a-a5e43e94f376",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "# Get Video",
+        "height": 640,
+        "width": 900,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1180,
+        -180
+      ],
+      "id": "925c54b1-90d6-4edf-b91a-7297db924232",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "# Publish Video",
+        "height": 640,
+        "width": 800,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2100,
+        -180
+      ],
+      "id": "70c37c9a-6a6a-4f12-a346-09097d931120",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://backend.blotato.com/v2/media",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "url",
+              "value": "={{ $json.data.video_url }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2280,
+        60
+      ],
+      "id": "550a59f4-f913-4d47-84f8-4517cd888369",
+      "name": "Upload to Blotato",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "kQelociB83sainmx",
+          "name": "Blotato 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://backend.blotato.com/v2/posts",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"post\": {\n    \"target\": {\n      \"targetType\": \"instagram\"\n    },\n    \"content\": {\n      \"text\": \"{{ $('Title AI Agent').item.json.output }}\",\n      \"platform\": \"instagram\",\n      \"mediaUrls\": [\"{{ $json.url }}\"]\n    },\n    \"accountId\": \"7807\"\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2500,
+        60
+      ],
+      "id": "c21711e7-03f9-4c97-951b-7543b14642f4",
+      "name": "Upload to Instagram",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "kQelociB83sainmx",
+          "name": "Blotato 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://backend.blotato.com/v2/posts",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"post\": {\n    \"target\": {\n      \"targetType\": \"youtube\",\n      \"title\": \"{{ $('Title AI Agent').item.json.output }}\",\n      \"privacyStatus\": \"unlisted\",\n      \"shouldNotifySubscribers\": false\n    },\n    \"content\": {\n      \"text\": \"\",\n      \"platform\": \"youtube\",\n      \"mediaUrls\": [\"{{ $('Upload to Blotato').item.json.url }}\"]\n    },\n    \"accountId\": \"4416\"\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2700,
+        60
+      ],
+      "id": "7431ac9c-35d6-4264-961c-54f6e138a1f7",
+      "name": "Upload to Youtube Shorts",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "kQelociB83sainmx",
+          "name": "Blotato 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Transcript AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Transcript AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Title AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transcript AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Title AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Title AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Generate Video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Video": {
+      "main": [
+        [
+          {
+            "node": "Wait 1 Minute",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 1 Minute": {
+      "main": [
+        [
+          {
+            "node": "Get Video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Video": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Download Video",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait For 10 Seconds",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait For 10 Seconds": {
+      "main": [
+        [
+          {
+            "node": "Get Video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Video": {
+      "main": [
+        [
+          {
+            "node": "Upload to Blotato",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload to Instagram": {
+      "main": [
+        [
+          {
+            "node": "Upload to Youtube Shorts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload to Blotato": {
+      "main": [
+        [
+          {
+            "node": "Upload to Instagram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "9ca134f7-1bf3-4e1e-8311-bec46bae4a1a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f96a7e8659163312cbaf16ad76688747ea79fa6bf8e4ec720c14444abdf2c12c"
+  },
+  "id": "IleTluCUiZ265co0",
+  "tags": []
+}

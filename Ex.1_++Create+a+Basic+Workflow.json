@@ -1,0 +1,147 @@
+﻿{
+  "name": "Ex.1:  Create a Basic Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "1UCLirmwRFPtPrsX7Fo4dikMTTb-rpNa6Jng5Rb9LCR0",
+          "mode": "list",
+          "cachedResultName": "Create Your First Workflow",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1UCLirmwRFPtPrsX7Fo4dikMTTb-rpNa6Jng5Rb9LCR0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1UCLirmwRFPtPrsX7Fo4dikMTTb-rpNa6Jng5Rb9LCR0/edit#gid=0"
+        },
+        "event": "rowAdded",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        336,
+        -192
+      ],
+      "id": "b6d25153-844a-4d4e-a7c0-30f0d9c63424",
+      "name": "Google Sheets Trigger"
+    },
+    {
+      "parameters": {
+        "givenName": "={{ $('Google Sheets Trigger').item.json.Name }}",
+        "additionalFields": {
+          "emailsUi": {
+            "emailsValues": [
+              {
+                "type": "home",
+                "value": "={{ $('Google Sheets Trigger').item.json.Email }}"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.googleContacts",
+      "typeVersion": 1,
+      "position": [
+        752,
+        -192
+      ],
+      "id": "d32583cb-9327-4b4c-9b3c-3c3aa11bea66",
+      "name": "Create a contact"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Email }}",
+        "subject": "=Hello {{ $json.Name }}",
+        "emailType": "text",
+        "message": "=Hello {{ $json.Name }}\n\nThank you for contacting us. We will get to you soon",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        544,
+        -192
+      ],
+      "id": "7bac2459-c367-4989-a586-f5f77981b55e",
+      "name": "Send a message",
+      "webhookId": "9c44590e-51ef-4684-94f2-8a260c9bc6ec"
+    },
+    {
+      "parameters": {
+        "sendTo": "krystian7431@gmail.com",
+        "subject": "=The client {{ $('Google Sheets Trigger').item.json.Name }} was added ",
+        "emailType": "text",
+        "message": "=The new clinet was added, here are some information:\n\nName: {{ $('Google Sheets Trigger').item.json.Name }}\nEmail: {{ $('Google Sheets Trigger').item.json.Email }}\nDescription: {{ $('Google Sheets Trigger').item.json.Description }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        960,
+        -192
+      ],
+      "id": "dbe8c5e1-9774-42d1-a40b-11bfe578fcee",
+      "name": "Send a message1",
+      "webhookId": "5e935c29-f6f1-4831-a0e8-d48ac197e208"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Sheets Trigger": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "Create a contact",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a contact": {
+      "main": [
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "3c024e4e-9348-468f-a309-540ef56594f1",
+  "meta": {
+    "instanceId": "ae59e6b831344dba624c99cbe778a4bc47150f8e64de86a8011d15bac8e58c21"
+  },
+  "id": "uWpQJpv85d3RC48j",
+  "tags": []
+}

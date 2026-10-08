@@ -1,0 +1,679 @@
+﻿{
+  "name": "Notion + Slack Tasks",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyX",
+              "value": 15,
+              "unit": "minutes"
+            }
+          ]
+        },
+        "databaseId": {
+          "__rl": true,
+          "value": "25bccdb2-3d99-80d2-8b32-f7fbfde3e7ec",
+          "mode": "list",
+          "cachedResultName": "Company Tasks ",
+          "cachedResultUrl": "https://www.notion.so/25bccdb23d9980d28b32f7fbfde3e7ec"
+        }
+      },
+      "type": "n8n-nodes-base.notionTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -240
+      ],
+      "id": "47de7287-ae6e-4e34-b7bf-2516423d28fe",
+      "name": "Notion Trigger",
+      "credentials": {
+        "notionApi": {
+          "id": "2Nw0g8Vv7uCusZCo",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C09CJ01VC03",
+          "mode": "list",
+          "cachedResultName": "team-tasks"
+        },
+        "messageType": "block",
+        "blocksUi": "={\n  \"blocks\": [\n    {\n      \"type\": \"header\",\n      \"text\": { \"type\": \"plain_text\", \"text\": \"ðŸ†• New Task Assigned\", \"emoji\": true }\n    },\n    {\n      \"type\": \"section\",\n      \"text\": { \"type\": \"mrkdwn\", \"text\": \"*{{ $('Notion Trigger').item.json['Task Name'] }}*\" }\n    },\n    {\n      \"type\": \"section\",\n      \"fields\": [\n        { \"type\": \"mrkdwn\", \"text\": \"*Assignee:*\\n<@{{ $json.ID }}>\" },\n        { \"type\": \"mrkdwn\", \"text\": \"*Priority:*\\n{{ $('Notion Trigger').item.json.Priority }}\" },\n        { \"type\": \"mrkdwn\", \"text\": \"*Status:*\\n{{ $('Notion Trigger').item.json.Status }}\" },\n        { \"type\": \"mrkdwn\", \"text\": \"*Due:*\\n{{ $('Notion Trigger').item.json['Due Date'].start.toDateTime().toFormat('yyyy-LL-dd HH:mm') }}\" }\n      ]\n    },\n    {\n      \"type\": \"section\",\n      \"text\": { \"type\": \"mrkdwn\", \"text\": \"*Description:*\\n{{ $('Notion Trigger').item.json.Description }}\" }\n    },\n    { \"type\": \"divider\" },\n    {\n      \"type\": \"context\",\n      \"elements\": [\n        { \"type\": \"mrkdwn\", \"text\": \"ðŸ”— <https://www.notion.so/Company-Tasks-Database-25bccdb23d99807eabdffa202aae0bda|Open in Notion>\" }\n      ]\n    }\n  ],\n  \"text\": \"New Task: {{ $('Notion Trigger').item.json['Task Name'] }}\"\n}\n",
+        "text": "=",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        576,
+        -240
+      ],
+      "id": "51bd491f-ad72-4962-bd62-d17c4a2a0623",
+      "name": "Send a message",
+      "webhookId": "9d7cf228-7a8e-4111-b4b4-51406482f658",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "nDrSmm0RV4qzjMt9",
+          "name": "Slack account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1xpRB87_nXNh8ZEbf-tX24iv3EruE0LTCztEG0TmbP9k",
+          "mode": "list",
+          "cachedResultName": "Employees Slack IDs",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1xpRB87_nXNh8ZEbf-tX24iv3EruE0LTCztEG0TmbP9k/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1xpRB87_nXNh8ZEbf-tX24iv3EruE0LTCztEG0TmbP9k/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Person",
+              "lookupValue": "={{ $json.Assignee[0] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        288,
+        -240
+      ],
+      "id": "f8e84221-571d-4b93-87c6-6d4df5d2ba62",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "VjB52JghQlX5ZmcR",
+          "name": "Google Sheets n8n"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 24
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        720
+      ],
+      "id": "923f86c0-1e6d-4b0e-adf7-4d1259a29e1d",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyX",
+              "value": 13,
+              "unit": "minutes"
+            }
+          ]
+        },
+        "event": "pagedUpdatedInDatabase",
+        "databaseId": {
+          "__rl": true,
+          "value": "25bccdb2-3d99-80d2-8b32-f7fbfde3e7ec",
+          "mode": "list",
+          "cachedResultName": "Company Tasks ",
+          "cachedResultUrl": "https://www.notion.so/25bccdb23d9980d28b32f7fbfde3e7ec"
+        }
+      },
+      "type": "n8n-nodes-base.notionTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        208
+      ],
+      "id": "40dc15bb-acc7-49ed-9827-3fc6651c86d0",
+      "name": "Notion Trigger1",
+      "credentials": {
+        "notionApi": {
+          "id": "2Nw0g8Vv7uCusZCo",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "116d2e85-330c-41ab-b34d-b02b8e871598",
+              "leftValue": "={{ $('Notion Trigger1').item.json.Status }}",
+              "rightValue": "Done",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        448,
+        208
+      ],
+      "id": "32011136-25b1-4c27-940f-ed0d8e8cbb2b",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C09CJ01VC03",
+          "mode": "list",
+          "cachedResultName": "team-tasks"
+        },
+        "messageType": "block",
+        "blocksUi": "={\n  \"blocks\": [\n    {\n      \"type\": \"section\",\n      \"text\": { \"type\": \"mrkdwn\", \"text\": \"âœ… *Task completed:* *{{ $('Notion Trigger1').item.json['Task Name'] }}*\" }\n    },\n    {\n      \"type\": \"context\",\n      \"elements\": [\n        {\n          \"type\": \"mrkdwn\",\n          \"text\": \"Assignee: <@{{ $('Get row(s) in sheet1').item.json.ID }}> â€¢ Priority: {{ $('Notion Trigger1').item.json.Priority }} â€¢ Due: {{ $('Notion Trigger1').item.json[\"Due Date\"].start.toDateTime().format(\"yyyy-MM-dd  H:mm\") }}AM\"\n        },\n        {\n          \"type\": \"mrkdwn\",\n          \"text\": \"ðŸ”— <https://www.notion.so/Company-Tasks-Database-25bccdb23d99807eabdffa202aae0bda |Open in Notion>\"\n        }\n      ]\n    }\n  ],\n  \"text\": \"Task completed\"\n}\n",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        704,
+        128
+      ],
+      "id": "00fcf71a-4094-44da-a0c9-80418336a760",
+      "name": "Send a message1",
+      "webhookId": "c50c1c50-d754-4e14-90ad-98514f082ddc",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "nDrSmm0RV4qzjMt9",
+          "name": "Slack account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1xpRB87_nXNh8ZEbf-tX24iv3EruE0LTCztEG0TmbP9k",
+          "mode": "list",
+          "cachedResultName": "Employees Slack IDs",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1xpRB87_nXNh8ZEbf-tX24iv3EruE0LTCztEG0TmbP9k/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1xpRB87_nXNh8ZEbf-tX24iv3EruE0LTCztEG0TmbP9k/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Person",
+              "lookupValue": "={{ $json.Assignee[0] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        240,
+        208
+      ],
+      "id": "de016a52-b4fc-4ec8-a329-fda30a43c780",
+      "name": "Get row(s) in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "VjB52JghQlX5ZmcR",
+          "name": "Google Sheets n8n"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        704,
+        336
+      ],
+      "id": "9e385e09-1660-4d15-b4e3-90c516bd0e1a",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": {
+          "__rl": true,
+          "value": "25bccdb2-3d99-80d2-8b32-f7fbfde3e7ec",
+          "mode": "list",
+          "cachedResultName": "Company Tasks ",
+          "cachedResultUrl": "https://www.notion.so/25bccdb23d9980d28b32f7fbfde3e7ec"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        240,
+        720
+      ],
+      "id": "7b602714-88ba-41f2-b753-711c1be080e4",
+      "name": "Get many database pages",
+      "credentials": {
+        "notionApi": {
+          "id": "2Nw0g8Vv7uCusZCo",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "9ffb28dd-702a-48c5-841e-5ecd2d21bae4",
+              "leftValue": "={{ $json.property_status }}",
+              "rightValue": "Done",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        448,
+        720
+      ],
+      "id": "b8f67946-40d4-4847-919b-401f6f625ada",
+      "name": "If1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        704,
+        832
+      ],
+      "id": "ffd3e9c0-ad78-4ce5-9942-de396be01eba",
+      "name": "No Operation, do nothing1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c900c8a4-f9ce-4dd9-ac29-f4f4ee8384c2",
+              "leftValue": "={{ $('Code').item.json.hours }}",
+              "rightValue": 3,
+              "operator": {
+                "type": "number",
+                "operation": "lt"
+              }
+            },
+            {
+              "id": "76f96638-6255-40c8-a4cb-b626d5dba361",
+              "leftValue": "={{ $('Code').item.json.hours }}",
+              "rightValue": 2.6,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1248,
+        608
+      ],
+      "id": "b72f8fec-e94a-408a-a99e-9e1858e8f7f4",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "18c63d60-77a6-4c25-93a2-dcfc2ccd84f8",
+              "name": "End Time",
+              "value": "={{ $json.property_due_date.start.toDateTime().format('yyyy-MM-dd HH:mm') }}",
+              "type": "string"
+            },
+            {
+              "id": "2b303c4c-312c-495d-925c-1bb42cc9b725",
+              "name": "Now",
+              "value": "={{ $now.format('yyyy-MM-dd HH:mm') }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        704,
+        608
+      ],
+      "id": "f65a5cd6-9138-4a84-b14f-2e5c717db4e2",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "jsCode": "const results = [];\n\nfor (const item of items) {\n  const end = item.json[\"End Time\"] ? new Date(item.json[\"End Time\"]) : null;\n  const now = new Date(item.json[\"Now\"]);\n\n  let hours = null;             // decimal hours (2 decimals) - backward compatible\n  let hours_1dp = null;         // decimal hours (1 decimal), e.g., 2.8 for 2h50m\n  let minutesTotal = null;      // total minutes (can be negative)\n  let hhmm = null;              // e.g., \"2:50\" or \"-0:45\"\n  let human = null;             // e.g., \"2h 50m\" or \"-0h 45m\"\n\n  if (end) {\n    const diffMs = end - now;\n\n    // decimal hours\n    hours = Number((diffMs / 36e5).toFixed(2)); // 2 decimals (e.g., 2.83)\n    hours_1dp = Number((diffMs / 36e5).toFixed(1)); // 1 decimal (e.g., 2.8)\n\n    // total minutes\n    minutesTotal = Math.round(diffMs / 60000);\n\n    // build HH:MM and human strings (preserve sign)\n    const sign = minutesTotal < 0 ? \"-\" : \"\";\n    const absMin = Math.abs(minutesTotal);\n    const h = Math.floor(absMin / 60);\n    const m = absMin % 60;\n\n    hhmm = `${sign}${h}:${String(m).padStart(2, \"0\")}`;\n    human = `${sign}${h}h ${m}m`;\n  }\n\n  results.push({\n    json: { \n      ...item.json, \n      hours,          // e.g., 2.83\n      hours_1dp,      // e.g., 2.8  (your â€œ10 formatâ€ feel)\n      minutesTotal,   // e.g., 240\n      hhmm,           // e.g., \"4:00\"\n      human           // e.g., \"4h 0m\"\n    }\n  });\n}\n\nreturn results;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        976,
+        608
+      ],
+      "id": "c809b2e5-c514-462d-be87-1030e83b0814",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C09CJ01VC03",
+          "mode": "list",
+          "cachedResultName": "team-tasks"
+        },
+        "messageType": "block",
+        "blocksUi": "={\n  \"blocks\": [\n    {\n      \"type\": \"section\",\n      \"text\": { \"type\": \"mrkdwn\", \"text\": \"â° *{{ $('Code').item.json.human }} hours left* to complete: *{{ $('Get many database pages').item.json.property_task_name }}*\" }\n    },\n    {\n      \"type\": \"context\",\n      \"elements\": [\n        {\n          \"type\": \"mrkdwn\",\n          \"text\": \"Assignee: <@{{ $json.ID }}> â€¢ Priority: {{ $('Get many database pages').item.json.property_priority }} â€¢ Due: {{ $('Get many database pages').item.json.property_due_date.start.toDateTime().format(\"yyyy-MM-dd  H:mm\") }}AM \"\n        },\n        {\n          \"type\": \"mrkdwn\",\n          \"text\": \"ðŸ”— <https://www.notion.so/Company-Tasks-Database-25bccdb23d99807eabdffa202aae0bda |Open in Notion>\"\n        }\n      ]\n    }\n  ],\n  \"text\": \"â° {{ $('Code').item.json.human }} hours left â€” {{ $('Get many database pages').item.json.property_task_name }}\"\n}\n",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        1856,
+        416
+      ],
+      "id": "6bfbb39e-415a-4c2f-b1a4-c9eb1949c3d2",
+      "name": "Send a message2",
+      "webhookId": "c88f15e4-c202-48a8-804e-86aa38ca02cd",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "nDrSmm0RV4qzjMt9",
+          "name": "Slack account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1xpRB87_nXNh8ZEbf-tX24iv3EruE0LTCztEG0TmbP9k",
+          "mode": "list",
+          "cachedResultName": "Employees Slack IDs",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1xpRB87_nXNh8ZEbf-tX24iv3EruE0LTCztEG0TmbP9k/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1xpRB87_nXNh8ZEbf-tX24iv3EruE0LTCztEG0TmbP9k/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Person",
+              "lookupValue": "={{ $('Get many database pages').item.json.property_assignee[0] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1616,
+        416
+      ],
+      "id": "b7933a99-2a80-4d44-bb99-51731bad662e",
+      "name": "Get row(s) in sheet2",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "VjB52JghQlX5ZmcR",
+          "name": "Google Sheets n8n"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Notion Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        []
+      ]
+    },
+    "Notion Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get many database pages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many database pages": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet2": {
+      "main": [
+        [
+          {
+            "node": "Send a message2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "17cf8d01-7eb9-426d-86e7-bd3b67342ac2",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8ec8bfddbd59fdde442d5ed0bec9c8e336f78ad4e7b2c1393fe111ac5a29897c"
+  },
+  "id": "pZ3fzajZ7gHIcRb4",
+  "tags": []
+}

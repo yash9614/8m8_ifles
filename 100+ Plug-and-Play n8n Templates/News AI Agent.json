@@ -1,0 +1,114 @@
+﻿{
+  "name": "News AI Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "symbol"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "c35e88bd-071d-4f24-803d-cd8198f84ed2",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "chatgpt-4o-latest",
+          "mode": "list",
+          "cachedResultName": "CHATGPT-4O-LATEST"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Extract only a traditional symbol e.g. \"TSLA\", \"ETH\", \"AAPL\", from here: {{ $json.symbol }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        220,
+        0
+      ],
+      "id": "4df99b78-3d66-45d9-a439-2f0de64a8c42",
+      "name": "Message a model",
+      "credentials": {
+        "openAiApi": {
+          "id": "GGNW9JnvMJrZ8lu8",
+          "name": "OpenAi account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://api.marketaux.com/v1/news/all?symbols={{ $json.message.content }}&filter_entities=true&language=en&api_token=568UiObGiZCWVHj6Zmxmi6DG2HA7tE6tcv8mjwHm",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        580,
+        0
+      ],
+      "id": "601b761d-8bcd-408f-9067-e71ef97f386f",
+      "name": "Get News"
+    }
+  ],
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "symbol": "BINANCE:ETHUSDT"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Get News",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "5f535995-c909-4276-a31d-8065267bbda9",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f96a7e8659163312cbaf16ad76688747ea79fa6bf8e4ec720c14444abdf2c12c"
+  },
+  "id": "6lIWTug5p0J5lbEH",
+  "tags": []
+}

@@ -1,0 +1,257 @@
+﻿{
+  "name": "MCP Tutorial copy",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "59edf937-fe25-4529-98dd-bd742c227e08"
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpTrigger",
+      "typeVersion": 1,
+      "position": [
+        -180,
+        60
+      ],
+      "id": "5cbd230a-5849-4f74-98d1-5e7a25e73267",
+      "name": "MCP Server Trigger",
+      "webhookId": "59edf937-fe25-4529-98dd-bd742c227e08"
+    },
+    {
+      "parameters": {
+        "content": "#### MCP Server Trigger",
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -180,
+        -160
+      ],
+      "id": "82dc6ed7-c916-41e8-8f24-6be42d05a5de",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('To', ``, 'string') }}",
+        "subject": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Subject', ``, 'string') }}",
+        "message": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Message', ``, 'string') }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        -260,
+        300
+      ],
+      "id": "cf265b5b-547f-46ae-a229-bdba244e73c1",
+      "name": "Gmail",
+      "webhookId": "ab78016d-fd0c-46a4-9a51-e8efaca656b2",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "pL96dHryaI9PSzH8",
+          "name": "Gmail account 12"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolCalculator",
+      "typeVersion": 1,
+      "position": [
+        180,
+        300
+      ],
+      "id": "f67a1a54-e405-4c99-88c7-a345e8a8ef7a",
+      "name": "Calculator"
+    },
+    {
+      "parameters": {
+        "sseEndpoint": "https://n8ndemos.app.n8n.cloud/mcp/mcp/sse",
+        "include": "selected",
+        "includeTools": [
+          "calculator"
+        ]
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
+      "typeVersion": 1,
+      "position": [
+        880,
+        300
+      ],
+      "id": "de7d221f-ebcc-4994-b4e3-47285badf326",
+      "name": "MCP Client"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "gpt-4o"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        660,
+        300
+      ],
+      "id": "593b4fc2-7c93-404b-9245-d153f9d83df9",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "LSihAOI8NTU3m5ce",
+          "name": "OpenAi account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Calendar', ``, 'string') }}",
+          "mode": "id",
+          "__regex": "(^[a-zA-Z0-9.!#$%&â€™*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*)"
+        },
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        -100,
+        300
+      ],
+      "id": "5e61e548-c015-4490-b505-3d1762adfbb0",
+      "name": "Google Calendar",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "q70grlt3uAAqMXM1",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "#### MCP Client",
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1040,
+        220
+      ],
+      "id": "3978be40-1520-4902-a47a-ae1870f3ed6c",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        680,
+        60
+      ],
+      "id": "91f65437-86af-4256-9bf3-52667e513ae6",
+      "name": "AI Agent Host"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        460,
+        60
+      ],
+      "id": "e12eeb83-7918-4a94-ae54-6397a43d5023",
+      "name": "When chat message received",
+      "webhookId": "430c536c-d439-4a8c-a195-66aebafdd581"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Gmail": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculator": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent Host",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MCP Client": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent Host",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Calendar": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent Host",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "74b48a5a-663a-4539-8cb1-6881d36cebb8",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ae59e6b831344dba624c99cbe778a4bc47150f8e64de86a8011d15bac8e58c21"
+  },
+  "id": "J7NuCwkBEUdmtfT9",
+  "tags": []
+}

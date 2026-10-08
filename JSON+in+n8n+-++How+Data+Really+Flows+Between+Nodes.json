@@ -1,0 +1,55 @@
+﻿{
+  "name": "JSON in n8n -  How Data Really Flows Between Nodes",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "10603fdc-28ff-43e3-b97b-622846d636b0",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        400,
+        144
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"firstName\": \"Damian\",\n  \"last_name\": \"Dan\", \n  \"age\": 28,\n  \"isActive\": true,\n  \"city\": \"Bangkok\",\n  \"skills\": [\"JavaScript\", \"Python\", \"N8N\"]\n}",
+        "options": {}
+      },
+      "id": "06c94170-f969-42a0-8bee-dc3956da40ed",
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        608,
+        144
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1be822ee-aae5-4c9e-bd80-0d817bea839a",
+  "meta": {
+    "instanceId": "ae59e6b831344dba624c99cbe778a4bc47150f8e64de86a8011d15bac8e58c21"
+  },
+  "id": "Z86nc6NFNQZZNAlD",
+  "tags": []
+}

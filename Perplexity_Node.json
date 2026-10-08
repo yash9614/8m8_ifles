@@ -1,0 +1,253 @@
+﻿{
+  "name": "Perplexity Node",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        800,
+        0
+      ],
+      "id": "98f02017-ca4b-4dda-8687-8cd501c73c30",
+      "name": "When clicking ΓÇÿExecute workflowΓÇÖ"
+    },
+    {
+      "parameters": {
+        "model": "sonar",
+        "messages": {
+          "message": [
+            {}
+          ]
+        },
+        "options": {},
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.perplexity",
+      "typeVersion": 1,
+      "position": [
+        1060,
+        0
+      ],
+      "id": "827d935f-2c4e-4e5e-8344-3ff7f443ab6e",
+      "name": "Perplexity",
+      "credentials": {
+        "perplexityApi": {
+          "id": "HcNYTdlqeZaMLfmd",
+          "name": "Perplexity account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        100,
+        0
+      ],
+      "id": "1db895c6-d650-4067-8fe5-d3dd597dd214",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        60,
+        200
+      ],
+      "id": "0712bd6f-d2a4-43b4-b2ac-86e21a3fa95f",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "0qLMfnxIrfTptc0E",
+          "name": "OpenAi account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "messages": {
+          "message": [
+            {
+              "content": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('message0_Text', ``, 'string') }}"
+            }
+          ]
+        },
+        "options": {},
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.perplexityTool",
+      "typeVersion": 1,
+      "position": [
+        280,
+        200
+      ],
+      "id": "8d410c9b-19f3-44db-9457-162c9c5db90e",
+      "name": "Perplexity1",
+      "credentials": {
+        "perplexityApi": {
+          "id": "HcNYTdlqeZaMLfmd",
+          "name": "Perplexity account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -160,
+        0
+      ],
+      "id": "6997d474-ac00-4543-a99e-41ecb6a56f20",
+      "name": "When chat message received",
+      "webhookId": "5c227e04-9316-4e93-89ab-ea1a09f64824"
+    },
+    {
+      "parameters": {
+        "content": "## Smart Perplexity AI Agent",
+        "height": 560,
+        "width": 880
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -300,
+        -160
+      ],
+      "id": "ca7e8a6e-6c4f-4cb5-93a0-aad03128840b",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Perplexity Node",
+        "height": 560,
+        "width": 880,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        620,
+        -160
+      ],
+      "id": "04036696-c8ca-403f-be8d-64380b104240",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Perplexity Node (HTTP Request)",
+        "height": 560,
+        "width": 880,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        160,
+        440
+      ],
+      "id": "a288ec54-2334-4b97-bfd7-8bddccbd5771",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.perplexity.ai/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer PUT_PERPLEXITY_KEY_IN_N8N"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"model\": \"sonar\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"Be precise and concise.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"How many stars are there in our galaxy?\"\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        540,
+        680
+      ],
+      "id": "3d170342-3c1a-4684-8981-afddf81060ca",
+      "name": "HTTP Request"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ΓÇÿExecute workflowΓÇÖ": {
+      "main": [
+        [
+          {
+            "node": "Perplexity",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Perplexity1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "c584e4f4-45a7-40f2-b7fe-77f8cec452e4",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f96a7e8659163312cbaf16ad76688747ea79fa6bf8e4ec720c14444abdf2c12c"
+  },
+  "id": "ZlkOw0aeQeZFJWeM",
+  "tags": []
+}
+

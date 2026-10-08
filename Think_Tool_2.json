@@ -1,0 +1,171 @@
+﻿{
+  "name": "Think Tool 2",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=# Overview\nYou are a helpful assistant\n\n# Instructions\nWhen you create any piece of written content you use a \"think node\" to make it human-like {{ $json.chatInput }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        220,
+        -20
+      ],
+      "id": "3786dc48-9574-45be-ba17-7d95af75342e",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "gpt-4o"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        60,
+        300
+      ],
+      "id": "2bf54c6f-efe2-41c5-80bc-a06726397aa3",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "QivR7SxB24l8KozV",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "description": "### Overview\n\nThis tool should reflect on a message from a user and respond to it in a more natural, clear, and human way. It should feel like a smart assistant taking a moment to think before saying something. The final output must sound like something a real person would say â€” smooth, casual, and easy to understand.\n\nAvoid robotic or overly technical language. Keep things simple and conversational.\n\n\n### Personality and Tone\n\n- Calm, clear, and thoughtful\n\n- Speaks like a real human, not a chatbot\n\n- Casual but respectful â€” like a smart colleague\n\n- Avoids overexplaining or using complicated words\n\n- Output should feel polished but natural\n\n\n### Human-Like Language Examples\nEncourage use of phrases such as:\n\n- \"Letâ€™s say it like this instead.\"\n\n- \"This might sound better.\"\n\n- \"Hereâ€™s a clearer way to say it.\"\n\n- \"That feels a bit robotic â€” letâ€™s humanize it.\"\n\n- \"Letâ€™s keep it simple and natural.\"\n\n- \"We could smooth this out like this:\"\n\n- \"Sounds close, just needs a small tweak.\"\n\n### Suggested Vocabulary\nPrefer human, casual alternatives:\n\n- â€œa bitâ€ instead of â€œslightlyâ€\n\n- â€œseemsâ€ instead of â€œappearsâ€\n\n- â€œfixâ€ instead of â€œresolveâ€\n\n- â€œgetâ€ instead of â€œobtainâ€\n\n- â€œhelpâ€ instead of â€œassistâ€\n\n- â€œcheckâ€ instead of â€œverifyâ€\n\n- â€œpretty sureâ€ instead of â€œhighly confidentâ€\n\n- â€œjust in caseâ€ instead of â€œas a precautionâ€\n\n\n## Avoid words like:\n\nâ€œcommenceâ€\n\nâ€œutilizeâ€\n\nâ€œthusâ€\n\nâ€œthereforeâ€\n\nâ€œpursuant toâ€\n\nâ€œin the event ofâ€\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolThink",
+      "typeVersion": 1,
+      "position": [
+        400,
+        300
+      ],
+      "id": "0fe96ce6-6fff-4f18-ac05-d5742b8f3604",
+      "name": "Think"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        20,
+        -20
+      ],
+      "id": "f7646652-fe35-4956-96d4-d0a357a1348c",
+      "name": "When chat message received",
+      "webhookId": "12b18889-6419-49d6-85cc-d767801e8523"
+    },
+    {
+      "parameters": {
+        "content": "## AI Agent",
+        "height": 280,
+        "width": 700
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        -120
+      ],
+      "id": "bfe737d4-07ec-4b2f-a1ac-df2348f8f7eb",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Model",
+        "height": 300,
+        "width": 340,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        180
+      ],
+      "id": "22ef9a4d-d3a3-4872-ac50-d79c60ce35c1",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Think Node",
+        "height": 300,
+        "width": 340,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        280,
+        180
+      ],
+      "id": "b4b327f7-fc29-4875-b276-60c6d8e0a528",
+      "name": "Sticky Note2"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        []
+      ]
+    },
+    "Think": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "65240557-f1b2-4423-8817-cf9b7061831a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f96a7e8659163312cbaf16ad76688747ea79fa6bf8e4ec720c14444abdf2c12c"
+  },
+  "id": "rEozaVRegaOokvnw",
+  "tags": []
+}

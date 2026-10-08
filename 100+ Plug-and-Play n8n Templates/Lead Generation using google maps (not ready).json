@@ -1,0 +1,365 @@
+﻿{
+  "name": "Lead Generation using google maps (not ready)",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "4e1f4700-3932-486a-9817-8388299ef812",
+      "name": "When chat message received",
+      "webhookId": "b25df0c6-5617-4581-9390-28f4266a80ce"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        200,
+        220
+      ],
+      "id": "cce9a8f0-f208-4ff8-a473-7a68edbe8365",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "0qLMfnxIrfTptc0E",
+          "name": "OpenAi account 4"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        380,
+        220
+      ],
+      "id": "6a954ea5-53e3-42e2-8d25-bee2cda67fc8",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "toolDescription": "=This bot helps you scrape all contact information for lead generation from Google Maps. Use the query parameter \"q\" for the search term, \"ll\" for latitude and longitude, and \"page\" for the current pagination index.",
+        "url": "https://google.serper.dev/maps",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "q",
+              "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('parameters0_Value', ``, 'string') }}"
+            },
+            {
+              "name": "ll",
+              "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('parameters1_Value', ``, 'string') }}"
+            },
+            {
+              "name": "page",
+              "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('parameters2_Value', ``, 'string') }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-KEY",
+              "value": "7ec430f62a4d53bd44ba210d23d7dd456bdb6cb0"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        700,
+        220
+      ],
+      "id": "90b44d61-829b-477c-8a42-2a84fcb13305",
+      "name": "Map Checker"
+    },
+    {
+      "parameters": {
+        "description": "=3. When MapÂ Checker responds, forward the raw JSON to the AIâ€¯Agent **exactly** like this:\n\n---\nExtract Name, Address, Phone, Website, Rating, Opening Hours, Email for each item.\nReturn an array of plain objects in JSON only, no wrapper, no markdown.\nExample:\n[{\"Name\":\"\",\"Address\":\"\",\"Phone\":\"\",\"Website\":\"\",\"Rating\":\"\",\"Opening Hours\":\"\",\"Email\":\"\"}]\nEmpty values are allowed but keys are mandatory.\n---\n\n4. Send the AIâ€¯Agent reply to the Structuredâ€¯Outputâ€¯Parser node.\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolThink",
+      "typeVersion": 1,
+      "position": [
+        540,
+        220
+      ],
+      "id": "83908a25-c83a-4421-ab23-de4d9a4b5a97",
+      "name": "Think"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1080,
+        440
+      ],
+      "id": "fb65c172-8cee-4f96-b96c-7e4c35bcd326",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "0qLMfnxIrfTptc0E",
+          "name": "OpenAi account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "This tool parses the input and stores it in a Google Sheet with the following columns:\n{\n\"Name\": \"\",\n\"Address\": \"\",\n\"Phone\": \"\",\n\"Website\": \"\",\n\"Rating\": \"\",\n\"Opening Hours\": \"\"\n}",
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1M3O-FDoQsJrMCMEgusrXb7UFQNHw9uUoT4WN-en3YjA",
+          "mode": "list",
+          "cachedResultName": "Save Locations Information",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1M3O-FDoQsJrMCMEgusrXb7UFQNHw9uUoT4WN-en3YjA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1M3O-FDoQsJrMCMEgusrXb7UFQNHw9uUoT4WN-en3YjA/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {
+            "Name": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Name', ``, 'string') }}",
+            "Address": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Address', ``, 'string') }}",
+            "Phone": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Phone', ``, 'string') }}",
+            "Website": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Website', ``, 'string') }}",
+            "Rating": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Rating', ``, 'string') }}",
+            "Opening Hours": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Opening_Hours', ``, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Address",
+              "displayName": "Address",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Website",
+              "displayName": "Website",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Rating",
+              "displayName": "Rating",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Opening Hours",
+              "displayName": "Opening Hours",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Opening_Hours",
+              "displayName": "Opening_Hours",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.6,
+      "position": [
+        860,
+        220
+      ],
+      "id": "f44d3940-dfa3-4f7a-bb8b-770d32d2ae81",
+      "name": "Append row in sheet in Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "RNwKb4ui91TeJRRZ",
+          "name": "Google Sheets account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Prompt: {{ $json.chatInput }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=You are a research agent.\n\nINPUT you receive (from the Map Checker tool) looks like:\n{\n  \"response\": {\n    \"places\": [\n      {\n        \"title\": \"Royal Tattoo\",\n        \"address\": \"123 Main St â€¦\",\n        \"phoneNumber\": \"(555) 123â€‘4567\",\n        \"website\": \"http://royaltattoo.com\",\n        \"rating\": 4.8,\n        \"openingHours\": { \"Monday\": \"11â€¯a.m.â€“7â€¯p.m.\", â€¦ }\n      },\n      â€¦\n    ]\n  }\n}\n\nTASKS\n1. For every element in response.places build an object with **exactly** these keys  \n   (keys must match Googleâ€‘Sheets columns, values may be empty strings):  \n   â€¢ Nameâ€ƒâ€ƒâ€ƒâ€ƒâ†Â title  \n   â€¢ Addressâ€ƒâ€ƒâ€ƒâ†Â address  \n   â€¢ Phoneâ€ƒâ€ƒâ€ƒÂ â†Â phoneNumber  \n   â€¢ Websiteâ€ƒâ€ƒÂ â†Â website  \n   â€¢ Ratingâ€ƒâ€ƒâ€ƒâ†Â rating  \n   â€¢ OpeningÂ HoursÂ â†Â openingHours values joined by â€œ, â€  \n   â€¢ Emailâ€ƒâ€ƒâ€ƒÂ â†Â empty string (GoogleÂ Maps seldom provides one)\n\n2. Return a single pure JSON array â€“ no markdown, no wrapper text.  \n   Example:\n\n[\n  {\n    \"Name\": \"Royal Tattoo\",\n    \"Address\": \"123Â MainÂ St â€¦\",\n    \"Phone\": \"(555)Â 123â€‘4567\",\n    \"Website\": \"http://royaltattoo.com\",\n    \"Rating\": \"4.8\",\n    \"Opening Hours\": \"MonÂ 11â€¯a.m.â€“7â€¯p.m., TueÂ â€¦\",\n    \"Email\": \"\"\n  },\n  â€¦\n]\n\n3. Do **not** add any other keys, commentary, or formatting.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        300,
+        0
+      ],
+      "id": "f3f0fc1f-d8ce-4d5e-9a91-94657c5ea674",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "content": "# https://www.youtube.com/watch?v=-DhlPOPYds0",
+        "width": 400
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        840,
+        -100
+      ],
+      "id": "8730bc8c-c8eb-4af4-bfde-5b1bb3504bbb",
+      "name": "Sticky Note"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Map Checker": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Think": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        []
+      ]
+    },
+    "Append row in sheet in Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "bae8ac3f-93af-4a9d-b90d-751c399313da",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f96a7e8659163312cbaf16ad76688747ea79fa6bf8e4ec720c14444abdf2c12c"
+  },
+  "id": "HebGa3tWmJMN2PPV",
+  "tags": []
+}

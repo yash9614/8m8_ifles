@@ -1,0 +1,202 @@
+﻿{
+  "name": "Motivaitonal Quotes Automation",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "f02fbd74-50bd-418e-9ced-3c81e649d375",
+      "name": "When clicking â€˜Execute workflowâ€™"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        192,
+        224
+      ],
+      "id": "be0154dc-c4cc-4399-8cd9-4c2d29fc3b44",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "ULctv1aW08WV7LUC",
+          "name": "OpenAi account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json['Email Address'] }}",
+        "subject": "Motivational quote",
+        "message": "={{ $('Quotes Generator').item.json.text }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        928,
+        0
+      ],
+      "id": "c432f941-9f1b-42af-ac4d-bf72e76a0f4d",
+      "name": "Send Quote",
+      "webhookId": "8c4468d7-a61b-4b6d-bdb3-f11f8daf24a5",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "hZdb5wYmZdKx7irU",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 7
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -48,
+        -224
+      ],
+      "id": "7b8ee9c9-ce1b-4e10-9a5b-df96a6ee44c8",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "Create a motivational quote, give just a quote itself, no extra text.",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        288,
+        0
+      ],
+      "id": "7433219a-53af-4271-af3e-9d4f01d50ce4",
+      "name": "Quotes Generator"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "16G3SI_P6Ebvs7T7wjpk0V7LT8Fzh9OMEAzv_MdM7C9I",
+          "mode": "list",
+          "cachedResultName": "Motivational Quotes Emails",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/16G3SI_P6Ebvs7T7wjpk0V7LT8Fzh9OMEAzv_MdM7C9I/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/16G3SI_P6Ebvs7T7wjpk0V7LT8Fzh9OMEAzv_MdM7C9I/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        640,
+        0
+      ],
+      "id": "65055546-eedb-4bad-9956-8ebce8d6cc6d",
+      "name": "Fetch Emails",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "TQHNRwbFTxYXwnxr",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking â€˜Execute workflowâ€™": {
+      "main": [
+        [
+          {
+            "node": "Quotes Generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Quotes Generator",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Quotes Generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Quotes Generator": {
+      "main": [
+        [
+          {
+            "node": "Fetch Emails",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Emails": {
+      "main": [
+        [
+          {
+            "node": "Send Quote",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "646fdde0-ec9a-49a2-962c-5aff5429fd74",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ae59e6b831344dba624c99cbe778a4bc47150f8e64de86a8011d15bac8e58c21"
+  },
+  "id": "X9Oc47I4KeRCMnUj",
+  "tags": []
+}

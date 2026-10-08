@@ -1,0 +1,288 @@
+﻿{
+  "name": "Technical Analysis AI System",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "9724db15-a527-48ae-ad96-660f2bf2a5a0",
+      "name": "Telegram Trigger",
+      "webhookId": "e1f74507-01a2-41dd-99c4-7477d43b65e1",
+      "credentials": {
+        "telegramApi": {
+          "id": "3G1bf5W5dRCTRZtN",
+          "name": "Telegram account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        60,
+        220
+      ],
+      "id": "6bfd3800-4e47-4308-a516-cef77b374a96",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "GGNW9JnvMJrZ8lu8",
+          "name": "OpenAi account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.message.chat.id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        220,
+        220
+      ],
+      "id": "a670333e-1aee-4def-a37b-33d7dafef1d2",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        580,
+        0
+      ],
+      "id": "e5985c0d-0374-4e11-bc45-bd56fc6cbcb8",
+      "name": "Send a text message",
+      "webhookId": "d20fb89e-99d9-4e36-9195-f4dcc25c5eb7",
+      "credentials": {
+        "telegramApi": {
+          "id": "3G1bf5W5dRCTRZtN",
+          "name": "Telegram account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message.text }}",
+        "options": {
+          "systemMessage": "=You are a professional crypto analyst assistant. Your role is to analyze a given trading symbol, perform technical chart analysis, fetch related news, and generate a well-structured and concise report.\n\nThe user provides the trading symbol in the format: `BINANCE:ETHUSDT`. You will receive the candlestick chart and recent news for that symbol from external tools.\n\nYour response must include both:\n1. Technical Analysis\n2. News Summary  \nThen wrap up with a short, insightful summary.\n\n** Rules for formatting and structure **\n\n- Always use Markdown formatting (Telegram supports it):\n  â€¢ Bold section titles: `**Text**`  \n  â€¢ Use bullet points `-` or emojis for readability  \n  â€¢ Separate each section with a line break  \n  â€¢ Use max 3â€“5 bullet points per section  \n  â€¢ Keep the entire response under **2000 characters**\n\n---\n\n** Technical Analysis **\n- Describe chart patterns (e.g., doji, hammer, engulfing) and what they mean.\n- Define current trend: uptrend, downtrend, or sideways.\n- Highlight key support/resistance levels.\n- Interpret MACD behavior (crossovers, momentum, divergence).\n\n** News Summary **\n- Summarize 1â€“2 key headlines if found.\n- If no news is available, say: â€œNo major recent news found.â€\n\n** Summary **\n- Conclude with a 2â€“3 sentence outlook: bullish, bearish, or neutral.\n- Keep it short and useful.\n\n** Disclaimer **  \nThis analysis is for educational purposes only and should not be considered financial advice. Always conduct your own research and consider your risk tolerance before making any trading decisions.\n\n---\n\n** Important **  \nAlways use the `think` tool to track your reasoning during this entire task.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        220,
+        0
+      ],
+      "id": "01bf1b0b-e13d-406d-853b-d1ebc3df08dd",
+      "name": "Main AI Agent"
+    },
+    {
+      "parameters": {
+        "description": "Use this tool to generate a summary of the current situation based on chart data for various symbols. Define the desired output structure using JSON format. Another AI will then analyze the charts and generate a description that matches the JSON format you provided.",
+        "workflowId": {
+          "__rl": true,
+          "value": "rQqXAzR4RYYgnLvf",
+          "mode": "list",
+          "cachedResultName": "Analyst AI Agent"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "chat_id": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+            "symbol": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('symbol', `This subnode performs a technical and news-based analysis of the provided cryptocurrency symbol.\n\nOnce a valid symbol is received, the subnode executes the selected workflow (e.g., Analyst AI Agent) to:\n\n- Fetch technical indicators and price movements\n- Analyze recent trends and patterns\n- Retrieve the latest news related to the symbol\n- Return a summarized report to the user via Telegram\n\nOnly the following symbols are available, you MUST choose one of these:\n\nBinance\tâœ”ï¸\tBINANCE:BTCUSDT\nBinance US\tâœ”ï¸\tBINANCEUS:BTCUSD\nBingX\tâœ”ï¸\tBINGX:BTCUSDT\nBiswap (BNB chain)\tâœ”ï¸\tBISWAP:BFGUSDT_E06259\nBitfinex\tâœ”ï¸\tBITFINEX:BTCUSD\nbitFlyer\tâœ”ï¸\tBITFLYER:BTCJPY\nBitget\tâœ”ï¸\tBITGET:BTCUSDT.P\nBithumb\tâœ”ï¸\tBITHUMB:BTCKRW\nBITKUB\tâœ”ï¸\tBITKUB:KUBTHB\nBitmart\tâœ”ï¸\tBITMART:BTCUSDT\nBitMEX\tâœ”ï¸\tBITMEX:XBTUSD\nBitrue\tâœ”ï¸\tBITRUE:FLRUSDT\nBitstamp\tâœ”ï¸\tBITSTAMP:BTCUSD\nBittrex\tâœ”ï¸\tBITTREX:DOGEUSD\nBlofin\tâœ”ï¸\tBLOFIN:BTCUSDT.P\nBrave New Coin\tâœ”ï¸\tBNC:BLX\nBTSE\tâœ”ï¸\tBTSE:BTCUSD.P\nBybit\tâœ”ï¸\tBYBIT:BTCUSDT.P\nCoinbase\tâœ”ï¸\tCOINBASE:BTCUSD\nCoinEx\tâœ”ï¸\tCOINEX:BTCUSDT\nDelta\tâœ”ï¸\tDELTA:BTCUSDT.P\nDerbit\tâœ”ï¸\tDERIBIT:BTCUSD.P\ndYdX\tâœ”ï¸\tDYDX:ETHUSD\nEXMO\tâœ”ï¸\tEXMO:BTCUSD\nGate.io\tâœ”ï¸\tGATEIO:APTUSDT\nGemini\tâœ”ï¸\tGEMINI:BTCUSD\nHoneyswap (Polygon)\tâœ”ï¸\tHONEYSWAPPOLYGON:DAIUSDC\nHoneyswap (xDai)\tâœ”ï¸\tHONEYSWAP:WXDAIMLN\nHTX\tâœ”ï¸\tHTX:BTCUSDT\nKraken\tâœ”ï¸\tKRAKEN:BTCUSD\nKuCoin\tâœ”ï¸\tKUCOIN:BTCUSDT\nMEXC Global\tâœ”ï¸\tMEXC:BTCUSDT.P\nOKCoin\tâœ”ï¸\tOKCOIN:BTCUSD\nOKX\tâœ”ï¸\tOKX:BTCUSDT.P\nOsmosis\tâœ”ï¸\tOSMOSIS:USDTUSD\nPancakeSwap (BNB chain)\tâœ”ï¸\tPANCAKESWAP:XRPCUSD_4314AC\nPangolin (Avalance)\tâœ”ï¸\tPANGOLIN:PNGUSDT.E\nPhemex\tâœ”ï¸\tPHEMEX:BTCPERP\nPionex\tâœ”ï¸\tPIONEX:BTCUSDT.P\nPoloniex\tâœ”ï¸\tPOLONIEX:BTCUSDT\nPyth\tâœ”ï¸\tPYTH:BTCUSD\nQuickSwap (Polygon)\tâœ”ï¸\tQUICKSWAP:OHMDAI\nSpookySwap (Fantom)\tâœ”ï¸\tSPOOKYSWAP:BTCETH_EC454E\nSushiSwap (Ethereum)\tâœ”ï¸\tSUSHISWAP:OHMDAI\nSushiSwap (Polygon)\tâœ”ï¸\tSUSHISWAPPOLYGON:GDDYUSDC\nTimeX\tâœ”ï¸\tTIMEX:QMALLUSDT\nTrader Joe (Avalanche)\tâœ”ï¸\tTRADERJOE:STGUSDC\nTradeStation\tâœ”ï¸\tTRADESTATION:BTCUSD\nUniswap v2 (Ethereum)\tâœ”ï¸\tUNISWAP:HEXUSDC\nUniswap v3 (Arbitrum)\tâœ”ï¸\tUNISWAP3ARBITRUM:GMXWETH\nUniswap v3 (Ethereum)\tâœ”ï¸\tUNISWAP3ETH:XENUSDC\nUniswap v3 (Polygon)\tâœ”ï¸\tUNISWAP3POLYGON:GNSDAI\nUpBit\tâœ”ï¸\tUPBIT:BTCKRW\nVerse (Ethereum)\tâœ”ï¸\tVERSEETH:WBTCUSDC_F3F82B\nVolmex\tâœ”ï¸\tVOLMEX:BVIV\nWagyuswap (Velas)\tâœ”ï¸\tWAGYUSWAP:ETHBUSD_63BA88\nWhiteBIT\tâœ”ï¸\tWHITEBIT:WBTUSDT\nWOO\tâœ”ï¸\tWOONETWORK:WOOUSDT\nxExchange\tâœ”ï¸\tXEXCHANGE:ASHUSDC\nZoomex\tâœ”ï¸\tZOOMEX:BTCUSDT.P\n`, 'string') }}",
+            "prompt": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('prompt', `If the user has made a specific request, you can add those details here so they are considered during the analysis.`, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "symbol",
+              "displayName": "symbol",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "prompt",
+              "displayName": "prompt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "chat_id",
+              "displayName": "chat_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        360,
+        220
+      ],
+      "id": "94f82046-5463-4a1b-8d2a-02faedb6c8d6",
+      "name": "Call Analysis AI Agent"
+    },
+    {
+      "parameters": {
+        "description": "Use this tool to get the latest news about the symbol",
+        "workflowId": {
+          "__rl": true,
+          "value": "6lIWTug5p0J5lbEH",
+          "mode": "list",
+          "cachedResultName": "News AI Agent"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "symbol": "={{ $('Telegram Trigger').item.json.message.text }}"
+          },
+          "matchingColumns": [
+            "symbol"
+          ],
+          "schema": [
+            {
+              "id": "symbol",
+              "displayName": "symbol",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        520,
+        220
+      ],
+      "id": "a9155475-425c-4d87-b4af-d4682a84b60e",
+      "name": "Call News AI Agent"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Main AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Main AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Main AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Main AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call Analysis AI Agent": {
+      "ai_tool": [
+        [
+          {
+            "node": "Main AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call News AI Agent": {
+      "ai_tool": [
+        [
+          {
+            "node": "Main AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "60b3f3b3-6c46-4c25-b212-34d72137f2fb",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f96a7e8659163312cbaf16ad76688747ea79fa6bf8e4ec720c14444abdf2c12c"
+  },
+  "id": "JnwQPjdssb6Y6yWp",
+  "tags": []
+}

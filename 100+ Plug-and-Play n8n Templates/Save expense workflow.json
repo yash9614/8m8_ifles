@@ -1,0 +1,213 @@
+﻿{
+  "name": "Save expense workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "input1"
+            }
+          ]
+        }
+      },
+      "id": "9f4b3ed7-5199-4c79-92a8-d9045df73e6a",
+      "name": "Workflow Input Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        -580,
+        20
+      ],
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "41442024-827a-48c8-9769-5396e473a362",
+      "name": "OpenAI Chat Model1",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "position": [
+        -360,
+        320
+      ],
+      "typeVersion": 1.1,
+      "credentials": {
+        "openAiApi": {
+          "id": "DBpeXA2IXrXK46lj",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "text": "=Convert expense to JSON format:  \n\n{{ $json.input1 }}",
+        "attributes": {
+          "attributes": [
+            {
+              "name": "cost",
+              "type": "number",
+              "description": "expense cost",
+              "required": true
+            },
+            {
+              "name": "descr",
+              "description": "description of expense",
+              "required": true
+            },
+            {
+              "name": "date",
+              "type": "date",
+              "description": "date in UTC format. "
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "9d90a6d9-4a76-4f89-9ba8-6d49de46e0ce",
+      "name": "Text to JSON parser",
+      "type": "@n8n/n8n-nodes-langchain.informationExtractor",
+      "position": [
+        -360,
+        20
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "11fzgMOHqbieL5fFnrxkmlXZ_k7Yui6vW2RAlxQ8l6yc",
+          "mode": "list",
+          "cachedResultName": "Expenses Tracker",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11fzgMOHqbieL5fFnrxkmlXZ_k7Yui6vW2RAlxQ8l6yc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11fzgMOHqbieL5fFnrxkmlXZ_k7Yui6vW2RAlxQ8l6yc/edit#gid=0"
+        },
+        "columns": {
+          "value": {
+            "msg": "={{ $('Workflow Input Trigger').item.json.input1 }}",
+            "cost": "={{ $json.output.cost }}",
+            "date": "={{ $json.output.date ? $json.output.date : $now }}",
+            "descr": "={{ $json.output.descr }}"
+          },
+          "schema": [
+            {
+              "id": "date",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "date",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "cost",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "cost",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "descr",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "descr",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "msg",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "msg",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            }
+          ],
+          "mappingMode": "defineBelow",
+          "matchingColumns": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "useAppend": true
+        }
+      },
+      "id": "47d1b605-5f68-41ad-8bab-ce649e13e526",
+      "name": "Save Expense",
+      "type": "n8n-nodes-base.googleSheets",
+      "position": [
+        0,
+        0
+      ],
+      "typeVersion": 4.5,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "TQHNRwbFTxYXwnxr",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Workflow Input Trigger": {
+      "main": [
+        [
+          {
+            "node": "Text to JSON parser",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Text to JSON parser",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Text to JSON parser": {
+      "main": [
+        [
+          {
+            "node": "Save Expense",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "d4b10408-caeb-418c-ba0c-1b8774e4d005",
+  "meta": {
+    "instanceId": "ae59e6b831344dba624c99cbe778a4bc47150f8e64de86a8011d15bac8e58c21"
+  },
+  "id": "ozseltaNkrZQfJmq",
+  "tags": []
+}

@@ -1,0 +1,429 @@
+﻿{
+  "name": "WhatsApp Rag Agent Supabase",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "messages"
+        ]
+      },
+      "id": "c4058a62-3652-48a5-888d-43ce3cda49e5",
+      "name": "WhatsApp Trigger",
+      "type": "n8n-nodes-base.whatsAppTrigger",
+      "position": [
+        940,
+        180
+      ],
+      "webhookId": "aaa71f03-f7af-4d18-8d9a-0afb86f1b554",
+      "typeVersion": 1,
+      "credentials": {
+        "whatsAppTriggerApi": {
+          "id": "MwUC6bDV20nydurN",
+          "name": "WhatsApp OAuth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o",
+        "options": {}
+      },
+      "id": "5ad5b60f-c219-4a4c-bb02-aaa758fed051",
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "position": [
+        1120,
+        480
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "7b68332d-5bd6-475d-944d-2e8c759ec1fa",
+      "name": "OpenAI Chat Model1",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "position": [
+        1680,
+        580
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "466179296585433",
+        "recipientPhoneNumber": "={{ $('WhatsApp Trigger').item.json.messages[0].from }}",
+        "textBody": "={{ $json.output }}",
+        "additionalFields": {
+          "previewUrl": false
+        },
+        "requestOptions": {}
+      },
+      "id": "95c9ab3a-a719-446a-a296-0ca653c53bbc",
+      "name": "Reply To User",
+      "type": "n8n-nodes-base.whatsApp",
+      "position": [
+        1780,
+        300
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "name": "Adaptify_AI_Knowlege_Base",
+        "description": "Call this tool to query the Adaptify AI knowledge base. "
+      },
+      "id": "5d9abf6e-8d26-420d-b6f8-73b2cebaeac0",
+      "name": "Vector Store Tool",
+      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+      "position": [
+        1460,
+        420
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "chunkOverlap": 200,
+        "options": {}
+      },
+      "id": "4790ac8d-c516-4637-ad84-9730957cf928",
+      "name": "Recursive Character Text Splitter2",
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        700,
+        860
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "1N91XEgHgA253HJ1Nb-Q6bSWHbLVZKWfL3ff7bRQxTdg",
+          "mode": "list",
+          "cachedResultName": "Adaptify AI Knowledge Base",
+          "cachedResultUrl": "https://docs.google.com/document/d/1N91XEgHgA253HJ1Nb-Q6bSWHbLVZKWfL3ff7bRQxTdg/edit?usp=drivesdk"
+        },
+        "options": {
+          "googleFileConversion": {
+            "conversion": {
+              "docsToFormat": "application/pdf"
+            }
+          }
+        }
+      },
+      "id": "664b76b8-891d-4742-a815-87f76b87be9a",
+      "name": "Google Drive2",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        220,
+        520
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "REPmELdYz9UjkwcW",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "dataType": "binary",
+        "options": {}
+      },
+      "id": "02012cc9-662e-4813-8e8b-7bf5cfcca1e6",
+      "name": "Default Data Loader2",
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1,
+      "position": [
+        780,
+        700
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "53a7fc35-620d-4037-90c0-b38aaf0b8eba",
+      "name": "Postgres Chat Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.1,
+      "position": [
+        1300,
+        420
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "DBJgKvKCAzIYYWkn",
+          "name": "Postgres account 7"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "fc2658eb-9ab1-4776-8e83-e04bc33a75c1",
+      "name": "Embeddings OpenAI",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.1,
+      "position": [
+        1360,
+        780
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "569fd13d-fd22-4883-8f66-8645a8789a50",
+      "name": "When clicking â€˜Test workflowâ€™",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        60,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "e64a66c4-ddc6-4c3d-9412-79600455998f",
+      "name": "Embeddings OpenAI1",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.1,
+      "position": [
+        600,
+        720
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "tableName": {
+          "__rl": true,
+          "value": "documents",
+          "mode": "list",
+          "cachedResultName": "documents"
+        },
+        "options": {
+          "queryName": "match_documents"
+        }
+      },
+      "id": "73c04e8c-fc00-4e5e-a261-84794700d91b",
+      "name": "Supabase Vector Store1",
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1,
+      "position": [
+        620,
+        420
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "LoWkUUvEz4f7lZcJ",
+          "name": "Supabase account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "tableName": {
+          "__rl": true,
+          "value": "documents",
+          "mode": "list",
+          "cachedResultName": "documents"
+        },
+        "options": {}
+      },
+      "id": "f1a5bd23-a493-403a-b9a5-e78b35bfdc18",
+      "name": "Supabase Vector Store",
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1,
+      "position": [
+        1360,
+        600
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "LoWkUUvEz4f7lZcJ",
+          "name": "Supabase account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.output}}",
+        "options": {
+          "systemMessage": "You are an expert assistant representing Adaptify AI.\n\nYou will use a vector database to retrieve the relevant information and respond to user queries.\n\nYour primary role is to assist users by providing accurate, factual, and relevant information about Adaptify AI's offerings and how they can address specific user needs.\n\nIf the user inquires about a service, guide them on how to explore or engage with Adaptify AI's solutions, providing appropriate URLs, contact details, or additional resources if necessary.\nYour goal is to educate and assist, not facilitate direct sales, ensuring users feel informed and empowered to make their decisions.\n\nIf cannot retrieve the information from the knowledge base and do not know the answer or, be transparent and let the user know. Always strive to maintain clarity and helpfulness in your responses."
+        }
+      },
+      "id": "96c21a80-8bd8-4aea-9688-70e1b7c6121e",
+      "name": "RAG Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        1300,
+        180
+      ],
+      "typeVersion": 1.6
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "WhatsApp Trigger": {
+      "main": [
+        [
+          {
+            "node": "RAG Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "RAG Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Vector Store Tool",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Vector Store Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "RAG Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recursive Character Text Splitter2": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader2",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive2": {
+      "main": [
+        [
+          {
+            "node": "Supabase Vector Store1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "RAG Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking â€˜Test workflowâ€™": {
+      "main": [
+        [
+          {
+            "node": "Google Drive2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI1": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Supabase Vector Store1",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader2": {
+      "ai_document": [
+        [
+          {
+            "node": "Supabase Vector Store1",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase Vector Store": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "Vector Store Tool",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RAG Agent": {
+      "main": [
+        [
+          {
+            "node": "Reply To User",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "95ca5351-3b8f-4a3c-b617-f0020ca32470",
+  "meta": {
+    "instanceId": "d1853d6d92799d2de46a947c80ac9a5af91665397cc93a1b568769b332366e37"
+  },
+  "id": "4VUrr7hXBgZiXo4D",
+  "tags": []
+}

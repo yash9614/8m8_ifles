@@ -1,0 +1,171 @@
+﻿{
+  "name": "AI Audio Transcriber",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {
+          "download": true
+        }
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "eb108c33-e055-401c-88b9-ca8e30757bd9",
+      "name": "Telegram Trigger",
+      "webhookId": "5bf1fa6f-d000-46aa-985c-92b1b86a39a0",
+      "credentials": {
+        "telegramApi": {
+          "id": "7lX83mUKAdUr9gCv",
+          "name": "Telegram account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-5.1",
+          "mode": "list",
+          "cachedResultName": "GPT-5.1"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=Summarize for me this text: "
+            },
+            {
+              "role": "system",
+              "content": "=** Role & Purpose **\nYou are an AI summarizer that transforms audio content into structured, concise text. Your role is to extract key ideas, actions, and insights, and organize them under predefined sections for clarity and usability.\n\n** Capabilities **\n- Generate summary under 1500 characters, do not exceed this length\n- Use clear, concise language with bullet points\n- Highlight main points, actions, and follow-ups\n- Capture stories, references, and related arguments\n\n** Interaction Style **\n- Always use the fixed structure: title, summary, main_points, action_items, follow_up, stories, references, arguments, related_topics\n- Keep tone neutral, clear, and professional\n- Use short, natural-sounding bullet points for lists\n- Provide plain text, do not format the response\n\n** Notes **\n- Strictly respect 1500-character limit\n- Prioritize clarity and usability over detail\n- Ensure consistency across all summaries\n"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2,
+      "position": [
+        416,
+        0
+      ],
+      "id": "54c7ed57-5e54-47e2-8609-a29e62b68dd5",
+      "name": "Message a model",
+      "credentials": {
+        "openAiApi": {
+          "id": "cSFm5PAvg2x4ft0I",
+          "name": "OpenAi account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "transcribe",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "cdcb0f2f-fcfb-4ec7-9df4-e2af1c675881",
+      "name": "Transcribe a recording",
+      "credentials": {
+        "openAiApi": {
+          "id": "cSFm5PAvg2x4ft0I",
+          "name": "OpenAi account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pageId": {
+          "__rl": true,
+          "mode": "url",
+          "value": ""
+        },
+        "title": "={{ $('Telegram Trigger').item.json.message.document.file_name }}",
+        "blockUi": {
+          "blockValues": [
+            {
+              "type": "heading_1",
+              "textContent": "Summary"
+            },
+            {
+              "textContent": "={{ $json.output[0].content[0].text }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        768,
+        0
+      ],
+      "id": "d167a4b3-1185-4bf3-948f-232253ac4120",
+      "name": "Create a page",
+      "credentials": {
+        "notionApi": {
+          "id": "2Nw0g8Vv7uCusZCo",
+          "name": "Notion account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Transcribe a recording",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transcribe a recording": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Create a page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "387e79b7-367d-4146-a20c-04501f34c05e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8ec8bfddbd59fdde442d5ed0bec9c8e336f78ad4e7b2c1393fe111ac5a29897c"
+  },
+  "id": "anW3eWpucYYVlcNZ",
+  "tags": []
+}

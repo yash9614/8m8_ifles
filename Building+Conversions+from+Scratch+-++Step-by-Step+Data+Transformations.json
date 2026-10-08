@@ -1,0 +1,936 @@
+﻿{
+  "name": "Building Conversions from Scratch -  Step-by-Step Data Transformations",
+  "nodes": [
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "condition1",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              },
+              "leftValue": "={{ typeof $json.userString }}",
+              "rightValue": "string"
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "c511f9ff-f077-4699-804b-048951e68519",
+      "name": "âœ… Test Object Conversion",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        784,
+        -416
+      ],
+      "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "condition1",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              },
+              "leftValue": "={{ $json.parsedUserData.role }}",
+              "rightValue": "developer"
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "7e39185e-0a30-4331-be77-0f98ee5ac9b0",
+      "name": "âœ… Test String to Object",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        784,
+        -144
+      ],
+      "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "condition1",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              },
+              "leftValue": "={{ $json.verificationStatus }}",
+              "rightValue": "Pending"
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "282d0e9c-68dd-4f75-8f25-79fcecd21635",
+      "name": "âœ… Test Boolean Conversion",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        784,
+        144
+      ],
+      "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "condition1",
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              },
+              "leftValue": "={{ $json.goodTotal }}",
+              "rightValue": 114.99
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "48935a89-9a96-42ec-807e-c7f64b834cad",
+      "name": "âœ… Test Math Conversion",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        784,
+        432
+      ],
+      "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "condition1",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              },
+              "leftValue": "={{ $json.developerLevel }}",
+              "rightValue": "Senior"
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "8f991c9d-7458-4e19-9cf4-a557302abdec",
+      "name": "âœ… Test Registration Logic",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        784,
+        688
+      ],
+      "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "condition1",
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              },
+              "leftValue": "={{ $json.skillCount }}",
+              "rightValue": 3
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "bf16bb14-6c8c-465e-9ac6-0700e81b2e90",
+      "name": "âœ… Test Array Conversion",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        784,
+        960
+      ],
+      "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "success-message-1",
+              "name": "result",
+              "value": "ðŸŽ‰ Object conversion works perfectly! Your JSON.stringify() expression is correct.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f44def27-1ffd-4228-b292-953508e95d56",
+      "name": "âœ… Object Success",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        976,
+        -544
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "error-message-1",
+              "name": "result",
+              "value": "âŒ Object conversion needs work. Make sure you're using JSON.stringify($json.user) and the type is set to String.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "40ad0f4a-7b0f-453a-8c29-3d2c3b18fbc5",
+      "name": "âŒ Object Error",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        976,
+        -352
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "success-message-2",
+              "name": "result",
+              "value": "ðŸŽ‰ String to object conversion works! Your JSON.parse() expression is correct.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "dc070f37-efb8-4409-abd5-8e2ba0f1da0a",
+      "name": "âœ… Parse Success",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        1344,
+        -240
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "error-message-2",
+              "name": "result",
+              "value": "âŒ String to object conversion needs work. Use JSON.parse($json.userDataString) and set type to Object.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "67b46acc-8bf9-4d93-b7d3-eaa7e5473b0d",
+      "name": "âŒ Parse Error",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        1344,
+        -32
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "success-message-3",
+              "name": "result",
+              "value": "ðŸŽ‰ Boolean conversion works! Your ternary operator expression is correct.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d07be6a7-8371-46b0-82e9-f2c5233c8117",
+      "name": "âœ… Boolean Success",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        976,
+        32
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "error-message-3",
+              "name": "result",
+              "value": "âŒ Boolean conversion needs work. Use the ternary operator: $json.isVerified ? 'Verified' : 'Pending'",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f6be24bc-9d39-458a-9341-32a6902e0844",
+      "name": "âŒ Boolean Error",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        976,
+        224
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "success-message-4",
+              "name": "result",
+              "value": "ðŸŽ‰ Math conversion works! You correctly used Number() for proper addition.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e895a129-f46f-440f-af71-4923ad2e8f6a",
+      "name": "âœ… Math Success",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        1360,
+        272
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "error-message-4",
+              "name": "result",
+              "value": "âŒ Math conversion needs work. Use Number($json.scoreText) + Number($json.priceText) for proper addition.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "9d44ba2e-45a9-423a-8e5b-36898c5a5695",
+      "name": "âŒ Math Error",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        1360,
+        480
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "success-message-5",
+              "name": "result",
+              "value": "ðŸŽ‰ Registration logic works! Your conditional expression correctly evaluates the score.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e6cd8370-e00d-4b02-8e40-626d3dd66603",
+      "name": "âœ… Logic Success",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        992,
+        576
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "error-message-5",
+              "name": "result",
+              "value": "âŒ Registration logic needs work. Use: Number($json.scoreText) >= 80 ? 'Senior' : 'Junior'",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "375ae50e-da19-482d-aa86-67d650e843d7",
+      "name": "âŒ Logic Error",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        1008,
+        768
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "success-message-6",
+              "name": "result",
+              "value": "ðŸŽ‰ Array conversion works! You correctly used .length to count array items.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "38caf517-e699-45e0-b3df-6138cb02ca7b",
+      "name": "âœ… Array Success",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        1376,
+        864
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "error-message-6",
+              "name": "result",
+              "value": "âŒ Array conversion needs work. Use $json.technologies.length to count array items.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "bc667bd1-6625-4b46-be66-92260874e81c",
+      "name": "âŒ Array Error",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        1392,
+        1088
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "field1",
+              "name": "user",
+              "value": {
+                "id": "USR123",
+                "username": "sarah_dev",
+                "email": "sarah@company.com",
+                "department": "Engineering"
+              },
+              "type": "object"
+            },
+            {
+              "id": "field2",
+              "name": "isVerified",
+              "value": false,
+              "type": "boolean"
+            },
+            {
+              "id": "field3",
+              "name": "scoreText",
+              "value": "85",
+              "type": "string"
+            },
+            {
+              "id": "field4",
+              "name": "priceText",
+              "value": "29.99",
+              "type": "string"
+            },
+            {
+              "id": "field5",
+              "name": "actualScore",
+              "value": 85,
+              "type": "number"
+            },
+            {
+              "id": "field6",
+              "name": "actualPrice",
+              "value": 29.99,
+              "type": "number"
+            },
+            {
+              "id": "field7",
+              "name": "technologies",
+              "value": [
+                "React",
+                "Node.js",
+                "PostgreSQL"
+              ],
+              "type": "array"
+            },
+            {
+              "id": "field8",
+              "name": "techString",
+              "value": "Vue, Express, MongoDB",
+              "type": "string"
+            },
+            {
+              "id": "field9",
+              "name": "userDataString",
+              "value": "{\"role\":\"developer\",\"level\":\"senior\"}",
+              "type": "string"
+            },
+            {
+              "id": "field10",
+              "name": "statusText",
+              "value": "false",
+              "type": "string"
+            },
+            {
+              "id": "field11",
+              "name": "emptyField",
+              "value": {},
+              "type": "string"
+            },
+            {
+              "id": "field12",
+              "name": "whitespace",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2793c5fc-0899-450d-98e6-0cfb87428050",
+      "name": "Sample Data1",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -32,
+        224
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9ff0f07f-0292-4576-84d8-5e9f55802fe1",
+              "name": "userString",
+              "value": "={{ JSON.stringify($json.user) }}.",
+              "type": "string"
+            },
+            {
+              "id": "ce9d4f4a-7aa5-4ffe-8a9a-fca6748da21a",
+              "name": "parsedUserData",
+              "value": "={{ JSON.parse($json.userDataString) }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "4f92f3c6-c437-461a-b925-c33b1c176f09",
+      "name": "User Data Conversions1",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        464,
+        -160
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": []
+        },
+        "options": {}
+      },
+      "id": "12fde479-2551-4dc9-989a-4a4fbd173a9b",
+      "name": "Status Conversions1",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        464,
+        128
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": []
+        },
+        "options": {}
+      },
+      "id": "4ff074fc-73c0-4dda-bd8c-090b1960176b",
+      "name": "Score Calculations1",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        464,
+        432
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": []
+        },
+        "options": {}
+      },
+      "id": "52bd095c-9384-4bbc-a29d-1e3a54adc084",
+      "name": "Registration Processing1",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        464,
+        672
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": []
+        },
+        "options": {}
+      },
+      "id": "7c990624-2585-4459-9c96-7f402e127a7b",
+      "name": "Technology Skills1",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        464,
+        944
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "options": {}
+      },
+      "id": "7f3f0bec-9234-445a-8a97-7543b1eab564",
+      "name": "Data Cleaning Challenge1",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        464,
+        1152
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -352,
+        224
+      ],
+      "id": "338377f1-3e7f-408f-8b2d-cb4203ec5884",
+      "name": "When clicking â€˜Execute workflowâ€™"
+    },
+    {
+      "parameters": {
+        "content": "## Common Conversion Patterns You'll Use \n**Safe number conversion:** `{{ Number($json.value) || 0 }}` - This converts any value to a number, but gives you zero if the conversion fails instead of breaking your workflow.\n\n**String to boolean (safe):** `{{ $json.value === 'true' }}` - This is much safer than just using Boolean() because it explicitly checks for the string \"true\" rather than treating any non-empty string as true.\n\n**Extract from object:** `{{ $json.user.department }}` - Use dot notation to pull specific values out of nested objects. This is super common when working with API responses.\n\n**Array to string:** `{{ $json.technologies.join(', ') }}` - Perfect for creating readable lists or sending array data to systems that only accept text.\n\n**String to array:** `{{ $json.techString.split(', ') }}` - The reverse operation, turning comma-separated text back into arrays you can loop through or manipulate.\n\n**Object to string:** `{{ JSON.stringify($json.user) }}` - Essential for storing complex objects in databases or sending them to APIs that expect text.\n\n**String to object:** `{{ JSON.parse($json.userDataString) }}` - Converting JSON strings back to objects so you can access their properties.\n\n**Conditional conversion:** `{{ Number($json.score) >= 80 ? 'Senior' : 'Junior' }}` - Combining conversion with logic to create derived fields based on your business rules.\n\n**Handle null values:** `{{ $json.value || 'default' }}` - Prevents null or undefined values from breaking your workflow by providing fallbacks.\n\n**Trim whitespace:** `{{ $json.text.trim() }}` - Always use this on user input because people love to add extra spaces.",
+        "height": 640,
+        "width": 800,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1744,
+        -384
+      ],
+      "id": "baad4709-a527-4d7c-9ccd-007cfb950ca2",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Debugging Tips\n\n1. Always check JSON view for data types - look for quotes and colors\n2. Test each conversion individually\n3. Use {{ typeof $json.fieldName }} to check data types\n4. Create debug fields for complex expressions - break into smaller pieces\n",
+        "height": 288,
+        "width": 368,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1744,
+        640
+      ],
+      "id": "a7a74bfe-b559-4737-a130-52dd09ed415b",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Real-World Tips\n\n1. APIs send numbers as strings - always convert before doing math\n2. Form submissions = everything comes as text\n3. User input is messy - expect spaces, wrong cases, empty fields\n4. Booleans come as strings \"true\"/\"false\", numbers 1/0, or actual booleans\n5. Empty arrays â‰  null â‰  undefined - use Array.isArray() to check first\n",
+        "height": 288,
+        "width": 384,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2176,
+        640
+      ],
+      "id": "8c432681-1264-4d16-8a82-d38d3d5a26d7",
+      "name": "Sticky Note2"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "âœ… Test Object Conversion": {
+      "main": [
+        [
+          {
+            "node": "âœ… Object Success",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "âŒ Object Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "âœ… Test String to Object": {
+      "main": [
+        [
+          {
+            "node": "âœ… Parse Success",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "âŒ Parse Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "âœ… Test Boolean Conversion": {
+      "main": [
+        [
+          {
+            "node": "âœ… Boolean Success",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "âŒ Boolean Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "âœ… Test Math Conversion": {
+      "main": [
+        [
+          {
+            "node": "âœ… Math Success",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "âŒ Math Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "âœ… Test Registration Logic": {
+      "main": [
+        [
+          {
+            "node": "âœ… Logic Success",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "âŒ Logic Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "âœ… Test Array Conversion": {
+      "main": [
+        [
+          {
+            "node": "âœ… Array Success",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "âŒ Array Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sample Data1": {
+      "main": [
+        [
+          {
+            "node": "User Data Conversions1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Status Conversions1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Score Calculations1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Registration Processing1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Technology Skills1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Data Cleaning Challenge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "User Data Conversions1": {
+      "main": [
+        []
+      ]
+    },
+    "Status Conversions1": {
+      "main": [
+        []
+      ]
+    },
+    "Score Calculations1": {
+      "main": [
+        []
+      ]
+    },
+    "Registration Processing1": {
+      "main": [
+        []
+      ]
+    },
+    "Technology Skills1": {
+      "main": [
+        []
+      ]
+    },
+    "When clicking â€˜Execute workflowâ€™": {
+      "main": [
+        [
+          {
+            "node": "Sample Data1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "7736a2a0-40fb-4b50-83bb-d816ec3e090e",
+  "meta": {
+    "instanceId": "ae59e6b831344dba624c99cbe778a4bc47150f8e64de86a8011d15bac8e58c21"
+  },
+  "id": "wbCnvKsvI9VjrNRX",
+  "tags": []
+}

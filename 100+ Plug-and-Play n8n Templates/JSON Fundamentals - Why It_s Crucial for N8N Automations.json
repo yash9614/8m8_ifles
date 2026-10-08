@@ -1,0 +1,179 @@
+﻿{
+  "name": "My workflow 45",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "d7d4d532-8f77-4211-8e7c-f96751af0ff8",
+      "name": "When clicking \"Test Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1",
+              "name": "firstName",
+              "value": "John",
+              "type": "string"
+            },
+            {
+              "id": "2",
+              "name": "lastName",
+              "value": "Smith",
+              "type": "string"
+            },
+            {
+              "id": "3",
+              "name": "email",
+              "value": "john@example.com",
+              "type": "string"
+            },
+            {
+              "id": "4",
+              "name": "department",
+              "value": "Engineering",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "482fd55d-7c0f-48a6-a645-6f5f91694a09",
+      "name": "Employee Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        208,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1",
+              "name": "company",
+              "value": "TechCorp",
+              "type": "string"
+            },
+            {
+              "id": "2",
+              "name": "location",
+              "value": "New York",
+              "type": "string"
+            },
+            {
+              "id": "3",
+              "name": "industry",
+              "value": "Software",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f5d01a69-a92a-48e8-83bc-7d0fe7941812",
+      "name": "Company Info",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        400,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1",
+              "name": "previousNodeEmail",
+              "value": "={{ $json.industry }}",
+              "type": "string"
+            },
+            {
+              "id": "2",
+              "name": "employeeName",
+              "value": "={{ $('Employee Data').item.json.firstName }}",
+              "type": "string"
+            },
+            {
+              "id": "3",
+              "name": "employeeEmail",
+              "value": "={{ $('Employee Data').item.json.email }}",
+              "type": "string"
+            },
+            {
+              "id": "4",
+              "name": "fullMessage",
+              "value": "={{ $('Employee Data').item.json.firstName }} from {{ $json.company }} works in {{ $('Employee Data').item.json.department }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "35e446ec-5f1b-46de-828e-fc9a3f53b42c",
+      "name": "Reference Demo",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        608,
+        0
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking \"Test Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Employee Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Employee Data": {
+      "main": [
+        [
+          {
+            "node": "Company Info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Company Info": {
+      "main": [
+        [
+          {
+            "node": "Reference Demo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "f575c16f-77ee-485e-876b-08ada9b4df26",
+  "meta": {
+    "instanceId": "ae59e6b831344dba624c99cbe778a4bc47150f8e64de86a8011d15bac8e58c21"
+  },
+  "id": "HDjchEgRpanY2w3C",
+  "tags": []
+}
